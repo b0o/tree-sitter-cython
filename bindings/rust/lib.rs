@@ -62,6 +62,9 @@ pub const INJECTIONS_QUERY: &str = include_str!("../../queries/injections.scm");
 /// The symbol tagging query for this language.
 pub const LOCALS_QUERY: &str = include_str!("../../queries/locals.scm");
 
+/// The outline query for this language.
+pub const OUTLINE_QUERY: &str = include_str!("../../queries/outline.scm");
+
 #[cfg(test)]
 mod tests {
     #[test]
