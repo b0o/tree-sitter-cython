@@ -783,17 +783,15 @@ ctypedef int (*printf_func)(const char*, ...)
 
 (module
   (ctypedef_statement
-    (cvar_decl
+    (c_function_pointer_type
       (c_type
         (int_type))
-      (c_name
-        (type_qualifier)
+      (c_function_pointer_name
         (identifier))
-      (c_function_definition
-        (c_parameters
-          (maybe_typed_name
-            (int_type)
-            (type_qualifier)))))))
+      (c_function_pointer_args
+        (c_type
+          (int_type)
+          (type_qualifier))))))
 
 =====================================
 Simple external definition

@@ -1000,6 +1000,21 @@
     }
   },
   {
+    "type": "c_function_pointer_args",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "c_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "c_function_pointer_name",
     "named": true,
     "fields": {
@@ -1013,6 +1028,29 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "c_function_pointer_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "c_function_pointer_args",
+          "named": true
+        },
+        {
+          "type": "c_function_pointer_name",
+          "named": true
+        },
+        {
+          "type": "c_type",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -1097,10 +1135,6 @@
       "types": [
         {
           "type": "c_type",
-          "named": true
-        },
-        {
-          "type": "function_pointer_type",
           "named": true
         },
         {
@@ -1666,6 +1700,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "c_function_pointer_type",
+          "named": true
+        },
         {
           "type": "class_definition",
           "named": true
@@ -2675,21 +2713,6 @@
           }
         ]
       }
-    }
-  },
-  {
-    "type": "function_pointer_type",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "c_type",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -4674,6 +4697,10 @@
     "named": false
   },
   {
+    "type": ", ",
+    "named": false
+  },
+  {
     "type": "-",
     "named": false
   },
@@ -4947,7 +4974,8 @@
   },
   {
     "type": "comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "compl",
@@ -5099,7 +5127,8 @@
   },
   {
     "type": "line_continuation",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "long",

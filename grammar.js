@@ -39,8 +39,6 @@ module.exports = grammar(Python, {
     }).concat([
       [$.maybe_typed_name],
       [$.c_name, $.cvar_decl],
-      [$.c_type],
-      [$.argument_list, $.function_pointer_type],
     ]),
 
   rules: {
@@ -406,14 +404,6 @@ module.exports = grammar(Python, {
         alias(seq("long", "long"), "long long"),
       )),
 
-    function_pointer_type: $ =>
-      seq(
-        $.c_type,
-        "(",
-        optional(commaSep1($.c_type)),
-        ")",
-      ),
-
     // type: ['const'] (NAME ('.' PY_NAME)* | int_type | '(' type ')') ['complex'] [type_qualifier]
     c_type: $ =>
       prec.right(
@@ -430,7 +420,6 @@ module.exports = grammar(Python, {
             ),
             $.int_type,
             seq("(", $.c_type, ")"),
-            $.function_pointer_type, // Included here
           ),
           optional("complex"),
           repeat($.type_qualifier),
@@ -438,10 +427,7 @@ module.exports = grammar(Python, {
       ),
 
     c_name: $ =>
-      choice(
-        seq(optional($.type_qualifier), $.identifier),
-        seq("(", optional($.type_qualifier), $.identifier, ")"),
-      ),
+      seq(optional($.type_qualifier), $.identifier),
 
     maybe_typed_name: $ =>
       choice(
@@ -468,6 +454,19 @@ module.exports = grammar(Python, {
 
     c_function_pointer_name: $ =>
       seq("(", "*", field("name", $.identifier), ")"),
+
+    c_function_pointer_args: $ =>
+      choice("...",
+        seq(commaSep1($.c_type), optional(seq(", ", "...")))),
+
+    c_function_pointer_type: $ =>
+      seq(
+        $.c_type,
+        $.c_function_pointer_name,
+        "(",
+        optional($.c_function_pointer_args),
+        ")",
+      ),
 
     // type_qualifier: '*' | '**' | '&' | type_index ('.' NAME [type_index])*
     type_qualifier: $ =>
@@ -510,7 +509,7 @@ module.exports = grammar(Python, {
       seq(
         repeat($.storageclass),
         "ctypedef",
-        choice($.cvar_decl, $.struct, $.enum, $.fused, $.class_definition, $.extern_block),
+        choice($.cvar_decl, $.c_function_pointer_type, $.struct, $.enum, $.fused, $.class_definition, $.extern_block),
         optional(";"),
       ),
 

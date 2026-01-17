@@ -1126,3 +1126,25 @@ match(r1, r2, r3)
         (identifier)
         (identifier)
         (identifier)))))
+================================================================================
+New expressions
+================================================================================
+
+new int(3)
+new int(a)
+
+--------------------------------------------------------------------------------
+
+(module
+  (expression_statement
+    (new_expression
+      (c_type
+        (int_type))
+      (argument_list
+        (integer))))
+  (expression_statement
+    (new_expression
+      (c_type
+        (int_type))
+      (argument_list
+        (identifier)))))
