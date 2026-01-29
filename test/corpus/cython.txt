@@ -516,7 +516,8 @@ cdef numeric add(numeric a, numeric b)
       (extern_suite
         (ctypedef_statement
           (struct
-            (identifier)
+            (c_identifier
+              (identifier))
             (struct_suite
               (cvar_decl
                 (c_type
@@ -542,19 +543,16 @@ cdef numeric add(numeric a, numeric b)
       (ctype_declaration
         (enum
           (identifier)
-          (block
-            (expression_statement
-              (assignment
-                (identifier)
-                (integer)))
-            (expression_statement
-              (assignment
-                (identifier)
-                (integer)))
-            (expression_statement
-              (assignment
-                (identifier)
-                (integer))))))))
+          (enum_block
+            (c_identifier
+              (identifier))
+            (integer)
+            (c_identifier
+              (identifier))
+            (integer)
+            (c_identifier
+              (identifier))
+            (integer))))))
   (cdef_statement
     (cvar_def
       (maybe_typed_name
@@ -605,7 +603,8 @@ cdef cppclass Test:
     (cdef_type_declaration
       (ctype_declaration
         (cppclass
-          (identifier)
+          (c_identifier
+            (identifier))
           (cvar_def
             (maybe_typed_name
               (int_type)
@@ -788,11 +787,12 @@ ctypedef int (*printf_func)(const char*, ...)
 
 (module
   (ctypedef_statement
-    (c_function_pointer_type
+    (c_function_pointer
       (c_type
         (int_type))
       (c_function_pointer_name
-        (identifier))
+        (c_identifier
+          (identifier)))
       (c_parameters
         (maybe_typed_name
           (type_qualifier)
@@ -978,7 +978,8 @@ cdef cppclass Example[T]:
     (cdef_type_declaration
       (ctype_declaration
         (cppclass
-          (identifier)
+          (c_identifier
+            (identifier))
           (template_params
             (template_param
               (identifier)))
@@ -1000,7 +1001,8 @@ cdef cppclass SomeClass[U, V, W=*]:
     (cdef_type_declaration
       (ctype_declaration
         (cppclass
-          (identifier)
+          (c_identifier
+            (identifier))
           (template_params
             (template_param
               (identifier))
@@ -1026,7 +1028,8 @@ cdef const int (*pfunc_add)(const char*, int)
         (type_qualifier)
         (int_type)
         (c_function_pointer_name
-          (identifier)))
+          (c_identifier
+            (identifier))))
       (c_function_definition
         (c_parameters
           (maybe_typed_name
@@ -1073,7 +1076,8 @@ sizeof(Spam (*)())
     (cdef_type_declaration
       (ctype_declaration
         (struct
-          (identifier)
+          (c_identifier
+            (identifier))
           (struct_suite
             (cvar_decl
               (c_type
@@ -1180,10 +1184,11 @@ def func(x: "cython.int"):
     (parameters
       (typed_parameter
         (identifier)
-        (string
-          (string_start)
-          (string_content)
-          (string_end))))
+        (type
+          (string
+            (string_start)
+            (string_content)
+            (string_end)))))
     (block
       (pass_statement))))
 
@@ -1219,5 +1224,261 @@ for b in False, True:
       (identifier)
       (false)
       (true))
+    (block
+      (pass_statement))))
+
+=====================================
+Class definition with const method
+=====================================
+
+cdef cppclass X:
+    void get() nogil const:
+        pass
+
+---
+
+(module
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (cppclass
+          (c_identifier
+            (identifier))
+          (cvar_def
+            (maybe_typed_name
+              (identifier)
+              (identifier))
+            (c_function_definition
+              (c_parameters)
+              (gil_spec)
+              (block
+                (pass_statement)))))))))
+
+=====================================
+Class definition with alias
+=====================================
+
+cdef cppclass X "X":
+    pass
+
+---
+
+(module
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (cppclass
+          (c_identifier
+            (identifier)
+            (string
+              (string_start)
+              (string_content)
+              (string_end)))
+          (cvar_def
+            (maybe_typed_name
+              (identifier))))))))
+
+=====================================
+Function typedef with alias
+=====================================
+ctypedef int (*func "alias")()
+
+---
+
+(module
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          (identifier)
+          (string
+            (string_start)
+            (string_content)
+            (string_end))))
+      (c_parameters))))
+
+================================================================================
+Enums with aliases
+================================================================================
+
+cdef const int value = 2
+
+cdef enum Test1:
+    A "A" = 1 + 2
+    C "C" = value
+
+
+cdef enum Test2:
+    X "X" = 4, Y "Y", Z
+
+cdef enum: Test3
+
+cdef enum: Test4 "Test4" = 5
+
+cdef enum Hello: Test = 1, Test2 = 2
+
+---
+
+(module
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        (type_qualifier)
+        (int_type)
+        (identifier))
+      (integer)))
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (enum
+          (identifier)
+          (enum_block
+            (c_identifier
+              (identifier)
+              (string
+                (string_start)
+                (string_content)
+                (string_end)))
+            (binary_operator
+              (integer)
+              (integer))
+            (c_identifier
+              (identifier)
+              (string
+                (string_start)
+                (string_content)
+                (string_end)))
+            (identifier))))))
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (enum
+          (identifier)
+          (enum_block
+            (c_identifier
+              (identifier)
+              (string
+                (string_start)
+                (string_content)
+                (string_end)))
+            (integer)
+            (c_identifier
+              (identifier)
+              (string
+                (string_start)
+                (string_content)
+                (string_end)))
+            (c_identifier
+              (identifier)))))))
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (enum
+          (c_identifier
+            (identifier))))))
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (enum
+          (c_identifier
+            (identifier)
+            (string
+              (string_start)
+              (string_content)
+              (string_end)))
+          (integer)))))
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (enum
+          (identifier)
+          (c_identifier
+            (identifier))
+          (integer)
+          (c_identifier
+            (identifier))
+          (integer))))))
+
+================================================================================
+Struct with function pointer
+================================================================================
+ctypedef struct S:
+    void (*ptr)(object)
+---
+
+(module
+  (ctypedef_statement
+    (struct
+      (c_identifier
+        (identifier))
+      (struct_suite
+        (c_function_pointer
+          (c_type
+            (identifier))
+          (c_function_pointer_name
+            (c_identifier
+              (identifier)))
+          (c_parameters
+            (maybe_typed_name
+              (identifier))))))))
+
+================================================================================
+Type hints
+================================================================================
+from typing import *
+def func1(x:int | None):
+    pass
+
+def func2(x:Optional[int]):
+    pass
+
+def func3(x:Tuple[int, float]):
+    pass
+---
+
+(module
+  (import_from_statement
+    (dotted_name
+      (identifier))
+    (wildcard_import))
+  (function_definition
+    (identifier)
+    (parameters
+      (typed_parameter
+        (identifier)
+        (type
+          (binary_operator
+            (identifier)
+            (none)))))
+    (block
+      (pass_statement)))
+  (function_definition
+    (identifier)
+    (parameters
+      (typed_parameter
+        (identifier)
+        (type
+          (generic_type
+            (identifier)
+            (type_parameter
+              (type
+                (identifier)))))))
+    (block
+      (pass_statement)))
+  (function_definition
+    (identifier)
+    (parameters
+      (typed_parameter
+        (identifier)
+        (type
+          (generic_type
+            (identifier)
+            (type_parameter
+              (type
+                (identifier))
+              (type
+                (identifier)))))))
     (block
       (pass_statement))))

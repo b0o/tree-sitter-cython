@@ -1000,23 +1000,7 @@
     }
   },
   {
-    "type": "c_function_pointer_name",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "c_function_pointer_type",
+    "type": "c_function_pointer",
     "named": true,
     "fields": {},
     "children": {
@@ -1036,6 +1020,66 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "c_function_pointer_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "c_identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "c_function_pointer_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "c_parameters",
+          "named": true
+        },
+        {
+          "type": "c_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "c_identifier",
+    "named": true,
+    "fields": {
+      "alias": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -1294,6 +1338,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "c_function_pointer_type",
+          "named": true
+        },
         {
           "type": "c_type",
           "named": true
@@ -1632,6 +1680,10 @@
       "required": true,
       "types": [
         {
+          "type": "c_identifier",
+          "named": true
+        },
+        {
           "type": "cppclass",
           "named": true
         },
@@ -1641,10 +1693,6 @@
         },
         {
           "type": "cvar_def",
-          "named": true
-        },
-        {
-          "type": "identifier",
           "named": true
         },
         {
@@ -1690,7 +1738,7 @@
       "required": true,
       "types": [
         {
-          "type": "c_function_pointer_type",
+          "type": "c_function_pointer",
           "named": true
         },
         {
@@ -1745,6 +1793,10 @@
       "types": [
         {
           "type": "c_function_definition",
+          "named": true
+        },
+        {
+          "type": "c_identifier",
           "named": true
         },
         {
@@ -2169,11 +2221,19 @@
       "required": false,
       "types": [
         {
-          "type": "block",
+          "type": "c_identifier",
           "named": true
         },
         {
           "type": "c_type",
+          "named": true
+        },
+        {
+          "type": "enum_block",
+          "named": true
+        },
+        {
+          "type": "expression",
           "named": true
         },
         {
@@ -2182,6 +2242,25 @@
         },
         {
           "type": "storageclass",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "enum_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "c_identifier",
+          "named": true
+        },
+        {
+          "type": "expression",
           "named": true
         }
       ]
@@ -3966,24 +4045,13 @@
   {
     "type": "struct",
     "named": true,
-    "fields": {
-      "alias": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "string",
-            "named": true
-          }
-        ]
-      }
-    },
+    "fields": {},
     "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "identifier",
+          "type": "c_identifier",
           "named": true
         },
         {
@@ -4007,6 +4075,10 @@
       "types": [
         {
           "type": "block",
+          "named": true
+        },
+        {
+          "type": "c_function_pointer",
           "named": true
         },
         {
@@ -4348,7 +4420,7 @@
             "named": true
           },
           {
-            "type": "string",
+            "type": "type",
             "named": true
           }
         ]

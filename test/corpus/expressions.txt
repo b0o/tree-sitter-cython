@@ -122,7 +122,7 @@ assert await a(b) == c
     (parameters
       (typed_parameter
         (identifier)
-        (c_type
+        (type
           (identifier))))
     (type
       (identifier))
@@ -1018,3 +1018,31 @@ cdef volatile const int y
         (type_qualifier)
         (int_type)
         (identifier)))))
+
+================================================================================
+Casting to function pointer
+================================================================================
+
+<object (*)(double, double *, double *, int *)> func
+
+--------------------------------------------------------------------------------
+
+(module
+  (expression_statement
+    (cast_expression
+      (c_function_pointer_type
+        (c_type
+          (identifier))
+        (c_parameters
+          (maybe_typed_name
+            (int_type))
+          (maybe_typed_name
+            (int_type)
+            (type_modifier))
+          (maybe_typed_name
+            (int_type)
+            (type_modifier))
+          (maybe_typed_name
+            (int_type)
+            (type_modifier))))
+      (identifier))))

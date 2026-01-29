@@ -18,7 +18,6 @@ const PREC = Object.assign({}, Python.PREC, {
   gil_spec_exception_value: 1,
   new: 23,
   cast: 24,
-  lambda_parameters: 25,
 });
 
 module.exports = grammar(Python, {
@@ -310,8 +309,7 @@ module.exports = grammar(Python, {
             optional(seq("=", $.expression)),
             repeat(seq(
               ",",
-              $.identifier,
-              optional(field("alias", $.string)),
+              $.c_identifier,
               optional(seq("=", $.expression)),
             )),
             $._newline,
@@ -455,10 +453,18 @@ module.exports = grammar(Python, {
         ),
       ),
 
-    c_function_pointer_name: $ =>
-      seq("(", "*", field("name", $.identifier), ")"),
-
     c_function_pointer_type: $ =>
+      seq(
+        $.c_type,
+        "(", "*", ")",
+        $.c_parameters,
+      ),
+
+
+    c_function_pointer_name: $ =>
+      seq("(", "*", $.c_identifier, ")"),
+
+    c_function_pointer: $ =>
       seq(
         $.c_type,
         $.c_function_pointer_name,
@@ -507,7 +513,7 @@ module.exports = grammar(Python, {
       seq(
         repeat($.storageclass),
         "ctypedef",
-        choice($.cvar_decl, $.c_function_pointer_type, $.struct, $.enum, $.fused, $.class_definition, $.extern_block),
+        choice($.cvar_decl, $.c_function_pointer, $.struct, $.enum, $.fused, $.class_definition, $.extern_block),
         optional(";"),
       ),
 
@@ -527,6 +533,7 @@ module.exports = grammar(Python, {
         optional($.gil_spec),
         optional($.exception_value),
         optional($.gil_spec),
+        optional("const"),
         choice(
           seq(":", $._suite),
           $._newline,
@@ -544,27 +551,6 @@ module.exports = grammar(Python, {
         "[",
         commaSep1($.template_param),
         "]",
-      ),
-
-    lambda_parameters: $ =>
-      prec.right(
-        PREC.lambda_parameters,
-        choice(
-          $.identifier,
-          $.tuple_pattern,
-          $._parameters,
-        ),
-      ),
-
-    lambda: $ =>
-      prec(
-        PREC.lambda,
-        seq(
-          "lambda",
-          field("parameters", optional($.lambda_parameters)),
-          ":",
-          field("body", $.expression),
-        ),
       ),
 
     c_parameters: $ => seq("(", optional($._typedargslist), ")"),
@@ -632,7 +618,7 @@ module.exports = grammar(Python, {
               $.dictionary_splat_pattern,
             ),
             ":",
-            field("type", choice($.c_type, $.string)),
+            field("type", $.type),
           ),
         ),
       ),
@@ -653,8 +639,7 @@ module.exports = grammar(Python, {
       seq(
         repeat($.storageclass),
         choice("struct", "union"),
-        $.identifier,
-        optional(field("alias", $.string)),
+        $.c_identifier,
         choice($._newline, seq(":", $.struct_suite)),
       ),
     struct_suite: $ =>
@@ -663,7 +648,7 @@ module.exports = grammar(Python, {
         seq(
           $._indent,
           choice(
-            repeat($.cvar_decl),
+            repeat(choice($.cvar_decl, $.c_function_pointer)),
             $.pass_statement,
           ),
           $._dedent,
@@ -680,16 +665,35 @@ module.exports = grammar(Python, {
           seq(
             $.identifier,
             optional(seq("(", $.c_type, ")")),
-            optional(seq(":", $.c_type)),
           ),
         ),
-        choice($._newline, seq(":", $._suite)),
-      ),
+        ":",
+        choice($._enum_suite, $._enum_statements),
+        $._newline),
+
+    _enum_suite: $ => seq(
+      $._indent,
+      $.enum_block,
+      $._dedent),
+
+    enum_block: $ => seq(
+      repeat1($._enum_statements),
+    ),
+
+    _enum_statements: $ => commaSep1($._enum_statement),
+
+    _enum_statement: $ => seq(
+      $.c_identifier, optional(seq("=", $.expression)),
+    ),
+
+    // Optional alias used in underlying C library
+    c_identifier: $ =>
+      seq(field("name", $.identifier), optional(field("alias", $.string))),
 
     cppclass: $ =>
       seq(
         "cppclass",
-        $.identifier,
+        $.c_identifier,
         optional($.template_params),
         optional("nogil"),
         choice($._newline, seq(":", $._cppclass_suite)),
@@ -763,7 +767,7 @@ module.exports = grammar(Python, {
         PREC.cast,
         seq(
           "<",
-          $.c_type,
+          choice($.c_type, $.c_function_pointer_type),
           optional("?"),
           ">",
           $.expression,
