@@ -997,6 +997,35 @@ new int(a)
         (identifier)))))
 
 ================================================================================
+New as identifier
+================================================================================
+
+new = cdf.searchsorted(x)
+new = new.take(indices)
+
+--------------------------------------------------------------------------------
+
+(module
+  (expression_statement
+    (assignment
+      left: (identifier)
+      right: (call
+        function: (attribute
+          object: (identifier)
+          attribute: (identifier))
+        arguments: (argument_list
+          (identifier)))))
+  (expression_statement
+    (assignment
+      left: (identifier)
+      right: (call
+        function: (attribute
+          object: (identifier)
+          attribute: (identifier))
+        arguments: (argument_list
+          (identifier))))))
+
+================================================================================
 Type qualifiers
 ================================================================================
 
