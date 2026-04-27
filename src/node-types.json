@@ -1020,6 +1020,14 @@
           "named": true
         },
         {
+          "type": "exception_value",
+          "named": true
+        },
+        {
+          "type": "gil_spec",
+          "named": true
+        },
+        {
           "type": "storageclass",
           "named": true
         }

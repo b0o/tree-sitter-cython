@@ -497,6 +497,10 @@ module.exports = grammar(Python, {
         $.c_type,
         $.c_function_pointer_name,
         $.c_parameters,
+        optional($.gil_spec),
+        optional($.exception_value),
+        optional($.gil_spec),
+        $._newline,
       ),
 
     // type_modifier: '*' | '**' | '&' | type_index ('.' NAME [type_index])*

@@ -1848,6 +1848,92 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+Function pointer ctypedef with except and gil clauses
+================================================================================
+
+ctypedef int (*excfn)(int x) except? -1
+
+ctypedef int (*nogilfn)(int x) nogil
+
+ctypedef int (*combined)(int x) except -1 nogil
+
+ctypedef int (*reverse_combined)(int x) nogil except -1
+
+ctypedef void (*noexceptfn)(int x) noexcept
+
+--------------------------------------------------------------------------------
+
+(module
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)
+          name: (identifier)))
+      (exception_value
+        (unary_operator
+          argument: (integer)))))
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)
+          name: (identifier)))
+      (gil_spec)))
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)
+          name: (identifier)))
+      (exception_value
+        (unary_operator
+          argument: (integer)))
+      (gil_spec)))
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)
+          name: (identifier)))
+      (gil_spec)
+      (exception_value
+        (unary_operator
+          argument: (integer)))))
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        type: (identifier))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)
+          name: (identifier)))
+      (exception_value))))
+
+================================================================================
 type as soft keyword (identifier and type-alias both work)
 ================================================================================
 
