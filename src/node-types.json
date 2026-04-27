@@ -1018,6 +1018,10 @@
         {
           "type": "c_type",
           "named": true
+        },
+        {
+          "type": "storageclass",
+          "named": true
         }
       ]
     }

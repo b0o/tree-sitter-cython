@@ -8294,6 +8294,13 @@
       "type": "SEQ",
       "members": [
         {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "storageclass"
+          }
+        },
+        {
           "type": "SYMBOL",
           "name": "c_type"
         },

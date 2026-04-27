@@ -491,6 +491,7 @@ module.exports = grammar(Python, {
 
     c_function_pointer: $ =>
       seq(
+        repeat($.storageclass),
         $.c_type,
         $.c_function_pointer_name,
         $.c_parameters,

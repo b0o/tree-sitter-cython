@@ -1789,3 +1789,55 @@ def f3(self, child: int, start: int = None, stop: int = None):
         value: (none)))
     body: (block
       (pass_statement))))
+
+================================================================================
+ctypedef public function pointer
+================================================================================
+
+ctypedef public int (*F1)(int)
+
+ctypedef public double (*F2)(double, int)
+
+ctypedef public char* (*F3)(const char*)
+
+--------------------------------------------------------------------------------
+
+(module
+  (ctypedef_statement
+    (c_function_pointer
+      (storageclass)
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)))))
+  (ctypedef_statement
+    (c_function_pointer
+      (storageclass)
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type))
+        (maybe_typed_name
+          type: (int_type)))))
+  (ctypedef_statement
+    (c_function_pointer
+      (storageclass)
+      (c_type
+        (int_type)
+        (type_modifier))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          (type_qualifier)
+          type: (int_type)
+          (type_modifier))))))
