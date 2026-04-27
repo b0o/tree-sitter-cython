@@ -1106,15 +1106,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "type_modifier",
           "named": true
         }
       ]

@@ -448,7 +448,7 @@ module.exports = grammar(Python, {
       ),
 
     c_name: $ =>
-      seq(optional($.type_modifier), $.identifier),
+      $.identifier,
 
     maybe_typed_name: $ =>
       choice(

@@ -1848,6 +1848,43 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+Doubled const in cdef extern declaration
+================================================================================
+
+cdef extern from "lib.h":
+    const char* const* _LIB_FEATURES "_lib_features"
+    const char* const* DOUBLE_CONST
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cvar_decl
+          (c_type
+            (type_qualifier)
+            (int_type)
+            (type_modifier)
+            (type_modifier))
+          (identifier)
+          alias: (string
+            (string_start)
+            (string_content)
+            (string_end)))
+        (cvar_decl
+          (c_type
+            (type_qualifier)
+            (int_type)
+            (type_modifier)
+            (type_modifier))
+          (identifier))))))
+
+================================================================================
 ctypedef public function pointer
 ================================================================================
 

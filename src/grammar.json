@@ -8016,25 +8016,8 @@
       ]
     },
     "c_name": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "type_modifier"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "identifier"
-        }
-      ]
+      "type": "SYMBOL",
+      "name": "identifier"
     },
     "maybe_typed_name": {
       "type": "CHOICE",
