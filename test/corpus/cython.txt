@@ -1848,6 +1848,72 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+Nested type declarations in cppclass body
+================================================================================
+
+cdef extern from "lib.h":
+    cdef cppclass Outer:
+        struct Inner:
+            int x
+        union U:
+            int i
+            float f
+        enum E:
+            VAL_A
+        cppclass Nested:
+            int method()
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cdef_type_declaration
+          (ctype_declaration
+            (cppclass
+              (c_identifier
+                name: (identifier))
+              (struct
+                (c_identifier
+                  name: (identifier))
+                (struct_suite
+                  (cvar_decl
+                    (c_type
+                      (int_type))
+                    (identifier))))
+              (struct
+                (c_identifier
+                  name: (identifier))
+                (struct_suite
+                  (cvar_decl
+                    (c_type
+                      (int_type))
+                    (identifier))
+                  (cvar_decl
+                    (c_type
+                      type: (identifier))
+                    (identifier))))
+              (enum
+                (identifier)
+                (enum_block
+                  (c_identifier
+                    name: (identifier))))
+              (cppclass
+                (c_identifier
+                  name: (identifier))
+                (cvar_def
+                  (maybe_typed_name
+                    type: (int_type)
+                    name: (identifier))
+                  (c_function_definition
+                    (c_parameters)))))))))))
+
+================================================================================
 Cast to function pointer type with noexcept and nogil
 ================================================================================
 

@@ -1739,7 +1739,15 @@
           "named": true
         },
         {
+          "type": "enum",
+          "named": true
+        },
+        {
           "type": "pass_statement",
+          "named": true
+        },
+        {
+          "type": "struct",
           "named": true
         },
         {

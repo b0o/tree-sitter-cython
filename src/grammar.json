@@ -9872,6 +9872,14 @@
                     "name": "cppclass"
                   },
                   {
+                    "type": "SYMBOL",
+                    "name": "struct"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "enum"
+                  },
+                  {
                     "type": "SEQ",
                     "members": [
                       {

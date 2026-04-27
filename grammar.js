@@ -763,6 +763,8 @@ module.exports = grammar(Python, {
             $.ctypedef_statement,
             $.cvar_def,
             $.cppclass,
+            $.struct,
+            $.enum,
             seq(repeat1($.decorator), $.cvar_def),
           )),
           $._dedent,
