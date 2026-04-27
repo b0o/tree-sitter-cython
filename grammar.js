@@ -625,7 +625,7 @@ module.exports = grammar(Python, {
             choice(
               seq(optional("?"), $.expression),
               "*",
-              seq("+", optional($.identifier)),
+              seq("+", optional(choice($.identifier, "*"))),
             ),
           ),
         ),

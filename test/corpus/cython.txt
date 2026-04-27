@@ -1848,6 +1848,64 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+except clause variants: + ExceptionType and +*
+================================================================================
+
+cdef extern from "lib.h":
+    cdef cppclass Foo:
+        Foo() except +
+        Foo(int x) except + RuntimeError
+        Foo* clone() except +*
+        void method() except +
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cdef_type_declaration
+          (ctype_declaration
+            (cppclass
+              (c_identifier
+                name: (identifier))
+              (cvar_def
+                (maybe_typed_name
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters)
+                  (exception_value)))
+              (cvar_def
+                (maybe_typed_name
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters
+                    (maybe_typed_name
+                      type: (int_type)
+                      name: (identifier)))
+                  (exception_value
+                    (identifier))))
+              (cvar_def
+                (maybe_typed_name
+                  type: (identifier)
+                  (type_modifier)
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters)
+                  (exception_value)))
+              (cvar_def
+                (maybe_typed_name
+                  type: (identifier)
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters)
+                  (exception_value))))))))))
+
+================================================================================
 C++ extern declarations: enum alias, cppclass inheritance, destructors, method alias
 ================================================================================
 
