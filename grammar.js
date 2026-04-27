@@ -239,6 +239,7 @@ module.exports = grammar(Python, {
       seq(
         repeat($.storageclass),
         $.maybe_typed_name,
+        optional(field("alias", $.string)),
         choice(
           seq(
             optional(seq("=", $.expression)),
@@ -475,10 +476,14 @@ module.exports = grammar(Python, {
         ),
         seq(
           optional($.type_qualifier),
-          field("name", choice($.identifier, $.operator_name)),
+          field("name", choice($.identifier, $.operator_name, $.destructor_name)),
           repeat($.type_modifier),
         ),
       ),
+
+    // C++ destructor name: ~ClassName, used inside cppclass bodies.
+    destructor_name: $ =>
+      seq("~", $.identifier),
 
     c_function_pointer_type: $ =>
       seq(
@@ -705,6 +710,7 @@ module.exports = grammar(Python, {
         optional(
           seq(
             $.identifier,
+            optional(field("alias", $.string)),
             optional(seq("(", $.c_type, ")")),
           ),
         ),
@@ -736,6 +742,7 @@ module.exports = grammar(Python, {
         "cppclass",
         $.c_identifier,
         optional($.template_params),
+        optional(seq("(", commaSep1($.c_type), ")")),
         optional("nogil"),
         choice($._newline, seq(":", $._cppclass_suite)),
       ),
@@ -749,6 +756,7 @@ module.exports = grammar(Python, {
             $.ctypedef_statement,
             $.cvar_def,
             $.cppclass,
+            seq(repeat1($.decorator), $.cvar_def),
           )),
           $._dedent,
         ),

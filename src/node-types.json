@@ -1711,6 +1711,10 @@
           "named": true
         },
         {
+          "type": "c_type",
+          "named": true
+        },
+        {
           "type": "cppclass",
           "named": true
         },
@@ -1720,6 +1724,10 @@
         },
         {
           "type": "cvar_def",
+          "named": true
+        },
+        {
+          "type": "decorator",
           "named": true
         },
         {
@@ -1860,7 +1868,18 @@
   {
     "type": "cvar_def",
     "named": true,
-    "fields": {},
+    "fields": {
+      "alias": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
@@ -1985,6 +2004,21 @@
         },
         {
           "type": "expression_list",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "destructor_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
           "named": true
         }
       ]
@@ -2246,7 +2280,18 @@
   {
     "type": "enum",
     "named": true,
-    "fields": {},
+    "fields": {
+      "alias": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": false,
@@ -3451,6 +3496,10 @@
         "types": [
           {
             "type": "c_function_pointer_name",
+            "named": true
+          },
+          {
+            "type": "destructor_name",
             "named": true
           },
           {

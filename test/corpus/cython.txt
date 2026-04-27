@@ -1848,6 +1848,106 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+C++ extern declarations: enum alias, cppclass inheritance, destructors, method alias
+================================================================================
+
+cdef extern from "lib.h":
+    cdef enum Type "ns::Type":
+        VAL_A "ns::A"
+        VAL_B "ns::B" = 2
+
+    cdef cppclass Base:
+        pass
+
+    cdef cppclass Derived(Base):
+        Derived()
+        ~Derived()
+        @staticmethod
+        Derived* create()
+        int method "renamed_method"(int x)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cdef_type_declaration
+          (ctype_declaration
+            (enum
+              (identifier)
+              alias: (string
+                (string_start)
+                (string_content)
+                (string_end))
+              (enum_block
+                (c_identifier
+                  name: (identifier)
+                  alias: (string
+                    (string_start)
+                    (string_content)
+                    (string_end)))
+                (c_identifier
+                  name: (identifier)
+                  alias: (string
+                    (string_start)
+                    (string_content)
+                    (string_end)))
+                (integer)))))
+        (cdef_type_declaration
+          (ctype_declaration
+            (cppclass
+              (c_identifier
+                name: (identifier))
+              (cvar_def
+                (maybe_typed_name
+                  name: (identifier))))))
+        (cdef_type_declaration
+          (ctype_declaration
+            (cppclass
+              (c_identifier
+                name: (identifier))
+              (c_type
+                type: (identifier))
+              (cvar_def
+                (maybe_typed_name
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters)))
+              (cvar_def
+                (maybe_typed_name
+                  name: (destructor_name
+                    (identifier)))
+                (c_function_definition
+                  (c_parameters)))
+              (decorator
+                (identifier))
+              (cvar_def
+                (maybe_typed_name
+                  type: (identifier)
+                  (type_modifier)
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters)))
+              (cvar_def
+                (maybe_typed_name
+                  type: (int_type)
+                  name: (identifier))
+                alias: (string
+                  (string_start)
+                  (string_content)
+                  (string_end))
+                (c_function_definition
+                  (c_parameters
+                    (maybe_typed_name
+                      type: (int_type)
+                      name: (identifier))))))))))))
+
+================================================================================
 cppclass with template default types
 ================================================================================
 
