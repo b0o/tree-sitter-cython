@@ -606,7 +606,7 @@ module.exports = grammar(Python, {
       seq(
         $.maybe_typed_name,
         optional(seq(":", $.c_type)),
-        optional(seq("=", choice($.expression, "*"))),
+        optional(seq("=", choice($.expression, "*", "?"))),
       ),
 
     _typedargslist: $ =>

@@ -1848,6 +1848,70 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+Default value sentinels ``= *`` and ``= ?`` on parameters
+================================================================================
+
+cdef class Foo:
+    cpdef void scale(self, double scale, bint exponential=?)
+    cpdef void set_consensus(self, DigitalSequence sequence=?) except *
+    cpdef Profile to_profile(self, Background bg=?, int L=*, bint multihit=*)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (cdef_type_declaration
+      (class_definition
+        name: (identifier)
+        body: (block
+          (cdef_statement
+            (cvar_def
+              (maybe_typed_name
+                type: (identifier)
+                name: (identifier))
+              (c_function_definition
+                (c_parameters
+                  (maybe_typed_name
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (int_type)
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (identifier)
+                    name: (identifier))))))
+          (cdef_statement
+            (cvar_def
+              (maybe_typed_name
+                type: (identifier)
+                name: (identifier))
+              (c_function_definition
+                (c_parameters
+                  (maybe_typed_name
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (identifier)
+                    name: (identifier)))
+                (exception_value))))
+          (cdef_statement
+            (cvar_def
+              (maybe_typed_name
+                type: (identifier)
+                name: (identifier))
+              (c_function_definition
+                (c_parameters
+                  (maybe_typed_name
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (identifier)
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (int_type)
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (identifier)
+                    name: (identifier)))))))))))
+
+================================================================================
 Trailing comma in external_definition (api class spec)
 ================================================================================
 
