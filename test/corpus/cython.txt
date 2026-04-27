@@ -1848,6 +1848,84 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+Cast to function pointer type with noexcept and nogil
+================================================================================
+
+def fn1(obj):
+    return (<float(*)(float, float) noexcept nogil>obj)(1.0, 2.0)
+
+def fn2(obj):
+    return (<int(*)(int) nogil>obj)(5)
+
+def fn3(obj):
+    return (<int(*)(int) noexcept>obj)(5)
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier))
+    body: (block
+      (return_statement
+        (call
+          function: (parenthesized_expression
+            (cast_expression
+              (c_function_pointer_type
+                (c_type
+                  type: (identifier))
+                (c_parameters
+                  (maybe_typed_name
+                    name: (identifier))
+                  (maybe_typed_name
+                    name: (identifier)))
+                (exception_value)
+                (gil_spec))
+              (identifier)))
+          arguments: (argument_list
+            (float)
+            (float))))))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier))
+    body: (block
+      (return_statement
+        (call
+          function: (parenthesized_expression
+            (cast_expression
+              (c_function_pointer_type
+                (c_type
+                  (int_type))
+                (c_parameters
+                  (maybe_typed_name
+                    type: (int_type)))
+                (gil_spec))
+              (identifier)))
+          arguments: (argument_list
+            (integer))))))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier))
+    body: (block
+      (return_statement
+        (call
+          function: (parenthesized_expression
+            (cast_expression
+              (c_function_pointer_type
+                (c_type
+                  (int_type))
+                (c_parameters
+                  (maybe_typed_name
+                    type: (int_type)))
+                (exception_value))
+              (identifier)))
+          arguments: (argument_list
+            (integer)))))))
+
+================================================================================
 ``not None`` constraint with default value, ``new`` as identifier
 ================================================================================
 

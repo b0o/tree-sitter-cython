@@ -492,6 +492,8 @@ module.exports = grammar(Python, {
         $.c_type,
         "(", "*", ")",
         $.c_parameters,
+        optional($.exception_value),
+        optional($.gil_spec),
       ),
 
 
