@@ -249,6 +249,7 @@ module.exports = grammar(Python, {
               optional(seq("=", $.expression)),
             )),
             optional(","),
+            optional(";"),
             $._newline,
           ),
           $.c_function_definition,
@@ -312,6 +313,7 @@ module.exports = grammar(Python, {
               $.c_identifier,
               optional(seq("=", $.expression)),
             )),
+            optional(";"),
             $._newline,
           ),
           $.c_function_definition,
@@ -562,7 +564,7 @@ module.exports = grammar(Python, {
         optional("const"),
         choice(
           seq(":", $._suite),
-          $._newline,
+          seq(optional(";"), $._newline),
         ),
       ),
 

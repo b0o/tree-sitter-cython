@@ -1791,6 +1791,63 @@ def f3(self, child: int, start: int = None, stop: int = None):
       (pass_statement))))
 
 ================================================================================
+Trailing semicolon on declarations
+================================================================================
+
+def fn():
+    cdef int64_t x;
+    cdef int rc;
+
+cdef extern from "lib.h":
+    int simple_func(int a, int b);
+    void void_func();
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (identifier)
+            name: (identifier))))
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier))))))
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cvar_decl
+          (c_type
+            (int_type))
+          (c_name
+            (identifier))
+          (c_function_definition
+            (c_parameters
+              (maybe_typed_name
+                type: (int_type)
+                name: (identifier))
+              (maybe_typed_name
+                type: (int_type)
+                name: (identifier)))))
+        (cvar_decl
+          (c_type
+            type: (identifier))
+          (c_name
+            (identifier))
+          (c_function_definition
+            (c_parameters)))))))
+
+================================================================================
 ctypedef public function pointer
 ================================================================================
 
