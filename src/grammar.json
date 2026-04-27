@@ -7237,8 +7237,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "c_type"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "c_type"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "c_tuple_type"
+            }
+          ]
         },
         {
           "type": "CHOICE",
@@ -7882,6 +7891,64 @@
         ]
       }
     },
+    "c_tuple_type": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SYMBOL",
+          "name": "c_type"
+        },
+        {
+          "type": "STRING",
+          "value": ","
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "c_type"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "c_type"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
     "c_name": {
       "type": "SEQ",
       "members": [
@@ -7985,6 +8052,74 @@
                   "type": "BLANK"
                 }
               ]
+            },
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "identifier"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "operator_name"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "c_function_pointer_name"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "type_modifier"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "type_qualifier"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "FIELD",
+              "name": "type",
+              "content": {
+                "type": "SYMBOL",
+                "name": "c_tuple_type"
+              }
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "type_modifier"
+              }
             },
             {
               "type": "FIELD",
@@ -9515,6 +9650,10 @@
               },
               {
                 "type": "SYMBOL",
+                "name": "c_tuple_type"
+              },
+              {
+                "type": "SYMBOL",
                 "name": "expression"
               }
             ]
@@ -9542,6 +9681,10 @@
               {
                 "type": "SYMBOL",
                 "name": "c_type"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "c_tuple_type"
               },
               {
                 "type": "SYMBOL",

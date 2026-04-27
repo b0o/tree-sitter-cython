@@ -299,7 +299,7 @@ module.exports = grammar(Python, {
     cvar_decl: $ =>
       seq(
         repeat($.storageclass),
-        $.c_type,
+        choice($.c_type, $.c_tuple_type),
         optional(seq($.c_name, optional(field("alias", $.string)))),
         choice(
           seq(
@@ -427,6 +427,24 @@ module.exports = grammar(Python, {
         ),
       ),
 
+    // C tuple type: (T1, T2, ...). Cython feature for returning/passing multiple
+    // C values without a Python tuple. Always >= 2 elements (`(T)` is paren-wrap,
+    // covered by c_type itself). Not folded into c_type because that would put
+    // it on the path of typed_parameter (Python-parameter context), where it
+    // collides with tuple_pattern in `lambda (a, b): ...` and `def f((a, b)=v)`.
+    // Instead it's added as an explicit alternative to maybe_typed_name (cdef
+    // contexts), cvar_decl (ctypedef/extern), cast_expression, and
+    // sizeof_expression — the positions where Cython's tuple types appear.
+    c_tuple_type: $ =>
+      seq(
+        "(",
+        $.c_type,
+        ",",
+        commaSep1($.c_type),
+        optional(","),
+        ")",
+      ),
+
     c_name: $ =>
       seq(optional($.type_modifier), $.identifier),
 
@@ -443,6 +461,13 @@ module.exports = grammar(Python, {
             optional("complex"),
             repeat($.type_modifier),
           )),
+          field("name", optional(choice($.identifier, $.operator_name, $.c_function_pointer_name))),
+          repeat($.type_modifier),
+        ),
+        seq(
+          optional($.type_qualifier),
+          field("type", $.c_tuple_type),
+          repeat($.type_modifier),
           field("name", optional(choice($.identifier, $.operator_name, $.c_function_pointer_name))),
           repeat($.type_modifier),
         ),
@@ -757,7 +782,7 @@ module.exports = grammar(Python, {
         seq(
           "sizeof",
           "(",
-          choice($.c_function_argument_type, $.c_type, $.expression),
+          choice($.c_function_argument_type, $.c_type, $.c_tuple_type, $.expression),
           ")",
         ),
       ),
@@ -767,7 +792,7 @@ module.exports = grammar(Python, {
         PREC.cast,
         seq(
           "<",
-          choice($.c_type, $.c_function_pointer_type),
+          choice($.c_type, $.c_tuple_type, $.c_function_pointer_type),
           optional("?"),
           ">",
           $.expression,

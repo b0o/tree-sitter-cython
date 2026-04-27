@@ -1482,3 +1482,251 @@ def func3(x:Tuple[int, float]):
                 (identifier)))))))
     (block
       (pass_statement))))
+
+================================================================================
+Cython tuple return types
+================================================================================
+
+cdef (double, double) f1(int x):
+    return (1.0, 2.0)
+
+cdef (double, double) f2(int x) nogil:
+    return (1.0, 2.0)
+
+cpdef (int, int) f3(int x) except *:
+    return (1, 2)
+
+cpdef (int, int) f4(int x) except -1:
+    return (1, 2)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type))
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (c_function_definition
+        (c_parameters
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)))
+        (block
+          (return_statement
+            (tuple
+              (float)
+              (float)))))))
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type))
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (c_function_definition
+        (c_parameters
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)))
+        (gil_spec)
+        (block
+          (return_statement
+            (tuple
+              (float)
+              (float)))))))
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type))
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (c_function_definition
+        (c_parameters
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)))
+        (exception_value)
+        (block
+          (return_statement
+            (tuple
+              (integer)
+              (integer)))))))
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type))
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (c_function_definition
+        (c_parameters
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)))
+        (exception_value
+          (unary_operator
+            argument: (integer)))
+        (block
+          (return_statement
+            (tuple
+              (integer)
+              (integer))))))))
+
+================================================================================
+Cython tuple parameter and variable types
+================================================================================
+
+cdef int param_in((int, int) p):
+    return p[0]
+
+cdef (int, int) module_pair = (1, 2)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (int_type)
+        name: (identifier))
+      (c_function_definition
+        (c_parameters
+          (maybe_typed_name
+            type: (c_tuple_type
+              (c_type
+                (int_type))
+              (c_type
+                (int_type)))
+            name: (identifier)))
+        (block
+          (return_statement
+            (subscript
+              value: (identifier)
+              subscript: (integer)))))))
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type))
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (tuple
+        (integer)
+        (integer)))))
+
+================================================================================
+Cython tuple ctypedef
+================================================================================
+
+ctypedef (int, int) IntPair
+
+ctypedef (double, double, double) Vec3
+
+--------------------------------------------------------------------------------
+
+(module
+  (ctypedef_statement
+    (cvar_decl
+      (c_tuple_type
+        (c_type
+          (int_type))
+        (c_type
+          (int_type)))
+      (identifier)))
+  (ctypedef_statement
+    (cvar_decl
+      (c_tuple_type
+        (c_type
+          (int_type))
+        (c_type
+          (int_type))
+        (c_type
+          (int_type)))
+      (identifier))))
+
+================================================================================
+Cython tuple in cast and sizeof
+================================================================================
+
+cdef int sz():
+    return sizeof((int, int))
+
+def cast_it(obj):
+    return <(int, int)>obj
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (int_type)
+        name: (identifier))
+      (c_function_definition
+        (c_parameters)
+        (block
+          (return_statement
+            (sizeof_expression
+              (c_tuple_type
+                (c_type
+                  (int_type))
+                (c_type
+                  (int_type)))))))))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier))
+    body: (block
+      (return_statement
+        (cast_expression
+          (c_tuple_type
+            (c_type
+              (int_type))
+            (c_type
+              (int_type)))
+          (identifier))))))
+
+================================================================================
+Cython tuple in extern from
+================================================================================
+
+cdef extern from "lib.h":
+    (int, int) ext_func(int x)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cvar_decl
+          (c_tuple_type
+            (c_type
+              (int_type))
+            (c_type
+              (int_type)))
+          (c_name
+            (identifier))
+          (c_function_definition
+            (c_parameters
+              (maybe_typed_name
+                type: (int_type)
+                name: (identifier)))))))))

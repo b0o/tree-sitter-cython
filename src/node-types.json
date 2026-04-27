@@ -1144,6 +1144,21 @@
     }
   },
   {
+    "type": "c_tuple_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "c_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "c_type",
     "named": true,
     "fields": {
@@ -1340,6 +1355,10 @@
       "types": [
         {
           "type": "c_function_pointer_type",
+          "named": true
+        },
+        {
+          "type": "c_tuple_type",
           "named": true
         },
         {
@@ -1801,6 +1820,10 @@
         },
         {
           "type": "c_name",
+          "named": true
+        },
+        {
+          "type": "c_tuple_type",
           "named": true
         },
         {
@@ -3437,6 +3460,10 @@
         "required": false,
         "types": [
           {
+            "type": "c_tuple_type",
+            "named": true
+          },
+          {
             "type": "identifier",
             "named": true
           },
@@ -3933,6 +3960,10 @@
       "types": [
         {
           "type": "c_function_argument_type",
+          "named": true
+        },
+        {
+          "type": "c_tuple_type",
           "named": true
         },
         {
