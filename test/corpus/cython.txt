@@ -1848,6 +1848,45 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+type as soft keyword (identifier and type-alias both work)
+================================================================================
+
+def fn(self):
+    type, value, traceback = self._exc_info
+    type = self._exc_info
+
+type IntAlias = int
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier))
+    body: (block
+      (expression_statement
+        (assignment
+          left: (pattern_list
+            (identifier)
+            (identifier)
+            (identifier))
+          right: (attribute
+            object: (identifier)
+            attribute: (identifier))))
+      (expression_statement
+        (assignment
+          left: (identifier)
+          right: (attribute
+            object: (identifier)
+            attribute: (identifier))))))
+  (type_alias_statement
+    (type
+      (identifier))
+    (type
+      (identifier))))
+
+================================================================================
 Doubled const in cdef extern declaration
 ================================================================================
 

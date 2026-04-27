@@ -6383,6 +6383,10 @@
             {
               "type": "STRING",
               "value": "api"
+            },
+            {
+              "type": "STRING",
+              "value": "type"
             }
           ]
         },
