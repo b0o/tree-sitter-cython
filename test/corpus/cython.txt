@@ -1848,6 +1848,48 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+1-tuple C tuple types and trailing commas
+================================================================================
+
+ctypedef (int,) Singleton
+ctypedef (int, double, float,) Trailing
+cdef (int,) make():
+    return (5,)
+
+--------------------------------------------------------------------------------
+
+(module
+  (ctypedef_statement
+    (cvar_decl
+      (c_tuple_type
+        (c_type
+          (int_type)))
+      (identifier)))
+  (ctypedef_statement
+    (cvar_decl
+      (c_tuple_type
+        (c_type
+          (int_type))
+        (c_type
+          (int_type))
+        (c_type
+          type: (identifier)))
+      (identifier)))
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (c_function_definition
+        (c_parameters)
+        (block
+          (return_statement
+            (tuple
+              (integer))))))))
+
+================================================================================
 Nested type declarations in cppclass body
 ================================================================================
 

@@ -432,21 +432,20 @@ module.exports = grammar(Python, {
         ),
       ),
 
-    // C tuple type: (T1, T2, ...). Cython feature for returning/passing multiple
-    // C values without a Python tuple. Always >= 2 elements (`(T)` is paren-wrap,
-    // covered by c_type itself). Not folded into c_type because that would put
-    // it on the path of typed_parameter (Python-parameter context), where it
-    // collides with tuple_pattern in `lambda (a, b): ...` and `def f((a, b)=v)`.
-    // Instead it's added as an explicit alternative to maybe_typed_name (cdef
+    // C tuple type: (T1, T2, ...) — and the 1-tuple form (T,). Cython feature
+    // for returning/passing multiple C values without a Python tuple.
+    // Requires at least one comma (so `(T)` is paren-wrap, not a tuple). Not
+    // folded into c_type because that would put it on the path of
+    // typed_parameter (Python-parameter context), where it collides with
+    // tuple_pattern in `lambda (a, b): ...` and `def f((a, b)=v)`. Instead
+    // it's added as an explicit alternative to maybe_typed_name (cdef
     // contexts), cvar_decl (ctypedef/extern), cast_expression, and
     // sizeof_expression — the positions where Cython's tuple types appear.
     c_tuple_type: $ =>
       seq(
         "(",
         $.c_type,
-        ",",
-        commaSep1($.c_type),
-        optional(","),
+        repeat1(seq(",", optional($.c_type))),
         ")",
       ),
 
