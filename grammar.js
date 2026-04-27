@@ -38,6 +38,8 @@ module.exports = grammar(Python, {
     }).concat([
       [$.maybe_typed_name],
       [$.c_name, $.cvar_decl],
+      [$.typed_default_parameter, $.typed_parameter],
+      [$.typed_parameter],
     ]),
 
   rules: {
@@ -455,7 +457,7 @@ module.exports = grammar(Python, {
       choice(
         seq(
           optional($.type_qualifier),
-          field("type", choice($.identifier, $.int_type)),
+          field("type", choice($.identifier, $.keyword_identifier, $.int_type)),
           optional(seq(
             repeat(seq(
               ".",
@@ -464,7 +466,7 @@ module.exports = grammar(Python, {
             optional("complex"),
             repeat($.type_modifier),
           )),
-          field("name", optional(choice($.identifier, $.operator_name, $.c_function_pointer_name))),
+          field("name", optional(choice($.identifier, $.keyword_identifier, $.operator_name, $.c_function_pointer_name))),
           repeat($.type_modifier),
         ),
         seq(
@@ -530,7 +532,7 @@ module.exports = grammar(Python, {
       seq(
         "[",
         optional(choice(
-          $.integer,
+          $.expression,
           commaSep1(seq($.c_type, optional(seq("=", $.expression)))),
           commaSep1($.memory_view_index),
         )),
@@ -643,6 +645,7 @@ module.exports = grammar(Python, {
               $.list_splat_pattern,
               $.dictionary_splat_pattern,
             ),
+            optional(seq(":", field("annotation", $.type))),
             optional(seq(
               choice("not", "or"),
               "None",
@@ -668,6 +671,7 @@ module.exports = grammar(Python, {
             field("type", $.c_type),
             field("name", $.identifier),
             optional($.type_index),
+            optional(seq(":", field("annotation", $.type))),
             "=",
             field("value", $.expression),
           ),

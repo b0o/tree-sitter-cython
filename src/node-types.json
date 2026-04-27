@@ -4410,10 +4410,6 @@
           "named": true
         },
         {
-          "type": "integer",
-          "named": true
-        },
-        {
           "type": "memory_view_index",
           "named": true
         }
@@ -4463,6 +4459,16 @@
     "type": "typed_default_parameter",
     "named": true,
     "fields": {
+      "annotation": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,
@@ -4513,6 +4519,16 @@
     "type": "typed_parameter",
     "named": true,
     "fields": {
+      "annotation": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      },
       "type": {
         "multiple": false,
         "required": true,

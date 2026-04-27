@@ -1848,6 +1848,127 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+Hybrid C type and Python annotation on parameters
+================================================================================
+
+def hybrid1(self, Comm comm: Comm) -> int:
+    pass
+
+def hybrid2(self, Info info: Info | None = None) -> Self:
+    pass
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_parameter
+        type: (c_type
+          type: (identifier))
+        (identifier)
+        annotation: (type
+          (identifier))))
+    return_type: (type
+      (identifier))
+    body: (block
+      (pass_statement)))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_default_parameter
+        type: (c_type
+          type: (identifier))
+        name: (identifier)
+        annotation: (type
+          (binary_operator
+            left: (identifier)
+            right: (none)))
+        value: (none)))
+    return_type: (type
+      (identifier))
+    body: (block
+      (pass_statement))))
+
+================================================================================
+Soft keyword as type name in cdef
+================================================================================
+
+def fn():
+    cdef type cls = Comm
+    cdef match m = case_value
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (identifier)
+            name: (identifier))
+          (identifier)))
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (identifier)
+            name: (identifier))
+          (identifier))))))
+
+================================================================================
+Array sizes with constant expressions
+================================================================================
+
+def fn():
+    cdef int arr[N+1]
+    cdef int matrix[ROWS][COLS]
+    cdef char buffer[256]
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)
+            (type_modifier
+              (type_index
+                (binary_operator
+                  left: (identifier)
+                  right: (integer)))))))
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)
+            (type_modifier
+              (type_index
+                (c_type
+                  type: (identifier))))
+            (type_modifier
+              (type_index
+                (c_type
+                  type: (identifier)))))))
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)
+            (type_modifier
+              (type_index
+                (integer)))))))))
+
+================================================================================
 except clause variants: + ExceptionType and +*
 ================================================================================
 

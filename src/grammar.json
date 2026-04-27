@@ -3358,6 +3358,31 @@
                 ]
               },
               {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": ":"
+                      },
+                      {
+                        "type": "FIELD",
+                        "name": "annotation",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "type"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
                 "type": "STRING",
                 "value": "="
               },
@@ -5016,6 +5041,31 @@
                   {
                     "type": "SYMBOL",
                     "name": "dictionary_splat_pattern"
+                  }
+                ]
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": ":"
+                      },
+                      {
+                        "type": "FIELD",
+                        "name": "annotation",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "type"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "BLANK"
                   }
                 ]
               },
@@ -8069,6 +8119,10 @@
                   },
                   {
                     "type": "SYMBOL",
+                    "name": "keyword_identifier"
+                  },
+                  {
+                    "type": "SYMBOL",
                     "name": "int_type"
                   }
                 ]
@@ -8134,6 +8188,10 @@
                       {
                         "type": "SYMBOL",
                         "name": "identifier"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "keyword_identifier"
                       },
                       {
                         "type": "SYMBOL",
@@ -8484,7 +8542,7 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "integer"
+                  "name": "expression"
                 },
                 {
                   "type": "SEQ",
@@ -10205,6 +10263,13 @@
     [
       "c_name",
       "cvar_decl"
+    ],
+    [
+      "typed_default_parameter",
+      "typed_parameter"
+    ],
+    [
+      "typed_parameter"
     ]
   ],
   "precedences": [],
