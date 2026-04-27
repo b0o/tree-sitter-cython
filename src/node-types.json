@@ -1128,6 +1128,10 @@
         {
           "type": "identifier",
           "named": true
+        },
+        {
+          "type": "operator_name",
+          "named": true
         }
       ]
     }

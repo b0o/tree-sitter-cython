@@ -8103,8 +8103,17 @@
       ]
     },
     "c_name": {
-      "type": "SYMBOL",
-      "name": "identifier"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "operator_name"
+        }
+      ]
     },
     "maybe_typed_name": {
       "type": "CHOICE",

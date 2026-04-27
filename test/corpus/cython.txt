@@ -1848,6 +1848,59 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+Free-function operator overloads in extern blocks
+================================================================================
+
+cdef extern from "lib.h":
+    bint operator==(const string_view& lhs, const string_view& rhs)
+    bint operator<(const string_view& lhs, const string_view& rhs)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cvar_decl
+          (c_type
+            type: (identifier))
+          (c_name
+            (operator_name))
+          (c_function_definition
+            (c_parameters
+              (maybe_typed_name
+                (type_qualifier)
+                type: (identifier)
+                (type_modifier)
+                name: (identifier))
+              (maybe_typed_name
+                (type_qualifier)
+                type: (identifier)
+                (type_modifier)
+                name: (identifier)))))
+        (cvar_decl
+          (c_type
+            type: (identifier))
+          (c_name
+            (operator_name))
+          (c_function_definition
+            (c_parameters
+              (maybe_typed_name
+                (type_qualifier)
+                type: (identifier)
+                (type_modifier)
+                name: (identifier))
+              (maybe_typed_name
+                (type_qualifier)
+                type: (identifier)
+                (type_modifier)
+                name: (identifier)))))))))
+
+================================================================================
 1-tuple C tuple types and trailing commas
 ================================================================================
 
