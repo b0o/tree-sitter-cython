@@ -1848,6 +1848,76 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+cppclass with template default types
+================================================================================
+
+cdef cppclass Map[K, V=int]:
+    pass
+
+cdef cppclass MultiDefault[A=int, B=double, C=*]:
+    pass
+
+cdef cppclass StarDefault[T=*]:
+    pass
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (cppclass
+          (c_identifier
+            name: (identifier))
+          (template_params
+            (template_param
+              (identifier))
+            (template_param
+              (identifier)
+              (template_default
+                (c_type
+                  (int_type)))))
+          (cvar_def
+            (maybe_typed_name
+              name: (identifier)))))))
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (cppclass
+          (c_identifier
+            name: (identifier))
+          (template_params
+            (template_param
+              (identifier)
+              (template_default
+                (c_type
+                  (int_type))))
+            (template_param
+              (identifier)
+              (template_default
+                (c_type
+                  (int_type))))
+            (template_param
+              (identifier)
+              (template_default)))
+          (cvar_def
+            (maybe_typed_name
+              name: (identifier)))))))
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (cppclass
+          (c_identifier
+            name: (identifier))
+          (template_params
+            (template_param
+              (identifier)
+              (template_default)))
+          (cvar_def
+            (maybe_typed_name
+              name: (identifier))))))))
+
+================================================================================
 Function pointer ctypedef with except and gil clauses
 ================================================================================
 

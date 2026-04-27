@@ -4164,7 +4164,17 @@
   {
     "type": "template_default",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "c_type",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "template_param",

@@ -573,7 +573,7 @@ module.exports = grammar(Python, {
       ),
 
     template_default: $ =>
-      seq("=", "*"),
+      seq("=", choice("*", $.c_type)),
 
     template_param: $ =>
       seq($.identifier, optional($.template_default)),
