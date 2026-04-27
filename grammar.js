@@ -135,7 +135,10 @@ module.exports = grammar(Python, {
     external_definition: $ =>
       seq(
         "[",
-        commaSep1(seq(choice("object", "type"), $.c_type)),
+        commaSep1(choice(
+          seq(choice("object", "type"), $.c_type),
+          seq("check_size", $.identifier),
+        )),
         optional(","),
         "]",
       ),

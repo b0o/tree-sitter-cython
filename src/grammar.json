@@ -6647,24 +6647,42 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "SEQ",
+              "type": "CHOICE",
               "members": [
                 {
-                  "type": "CHOICE",
+                  "type": "SEQ",
                   "members": [
                     {
-                      "type": "STRING",
-                      "value": "object"
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": "object"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "type"
+                        }
+                      ]
                     },
                     {
-                      "type": "STRING",
-                      "value": "type"
+                      "type": "SYMBOL",
+                      "name": "c_type"
                     }
                   ]
                 },
                 {
-                  "type": "SYMBOL",
-                  "name": "c_type"
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "check_size"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "identifier"
+                    }
+                  ]
                 }
               ]
             },
@@ -6678,24 +6696,42 @@
                     "value": ","
                   },
                   {
-                    "type": "SEQ",
+                    "type": "CHOICE",
                     "members": [
                       {
-                        "type": "CHOICE",
+                        "type": "SEQ",
                         "members": [
                           {
-                            "type": "STRING",
-                            "value": "object"
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "STRING",
+                                "value": "object"
+                              },
+                              {
+                                "type": "STRING",
+                                "value": "type"
+                              }
+                            ]
                           },
                           {
-                            "type": "STRING",
-                            "value": "type"
+                            "type": "SYMBOL",
+                            "name": "c_type"
                           }
                         ]
                       },
                       {
-                        "type": "SYMBOL",
-                        "name": "c_type"
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": "check_size"
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "identifier"
+                          }
+                        ]
                       }
                     ]
                   }

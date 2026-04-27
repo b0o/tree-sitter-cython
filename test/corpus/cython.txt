@@ -1848,6 +1848,54 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+check_size directive in external_definition
+================================================================================
+
+cdef extern from "lib.h":
+    ctypedef extern class types.CodeType[object PyCodeObject, check_size ignore]:
+        cdef object co_name
+
+    ctypedef extern class numpy.ndarray [object PyArrayObject, check_size ignore]:
+        pass
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (ctypedef_statement
+          (extern_block
+            (class_definition
+              name: (identifier)
+              (identifier)
+              name_specification: (external_definition
+                (c_type
+                  type: (identifier))
+                (identifier))
+              body: (block
+                (cdef_statement
+                  (cvar_def
+                    (maybe_typed_name
+                      type: (identifier)
+                      name: (identifier))))))))
+        (ctypedef_statement
+          (extern_block
+            (class_definition
+              name: (identifier)
+              (identifier)
+              name_specification: (external_definition
+                (c_type
+                  type: (identifier))
+                (identifier))
+              body: (block
+                (pass_statement)))))))))
+
+================================================================================
 Default value sentinels ``= *`` and ``= ?`` on parameters
 ================================================================================
 

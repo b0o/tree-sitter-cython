@@ -2564,6 +2564,10 @@
         {
           "type": "c_type",
           "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
         }
       ]
     }
@@ -5162,6 +5166,10 @@
   },
   {
     "type": "char",
+    "named": false
+  },
+  {
+    "type": "check_size",
     "named": false
   },
   {
