@@ -1848,6 +1848,71 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+``not None`` constraint with default value, ``new`` as identifier
+================================================================================
+
+def fn1(self, Alphabet alpha not None = Alphabet.dna()):
+    pass
+
+def fn2(self, Alphabet alpha or None = None):
+    pass
+
+def use_new():
+    cdef Foo new = Foo()
+    new.method()
+    return new
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_default_parameter
+        type: (c_type
+          type: (identifier))
+        name: (identifier)
+        value: (call
+          function: (attribute
+            object: (identifier)
+            attribute: (identifier))
+          arguments: (argument_list))))
+    body: (block
+      (pass_statement)))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_default_parameter
+        type: (c_type
+          type: (identifier))
+        name: (identifier)
+        value: (none)))
+    body: (block
+      (pass_statement)))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (identifier)
+            name: (identifier))
+          (call
+            function: (identifier)
+            arguments: (argument_list))))
+      (expression_statement
+        (call
+          function: (attribute
+            object: (identifier)
+            attribute: (identifier))
+          arguments: (argument_list)))
+      (return_statement
+        (identifier)))))
+
+================================================================================
 Hybrid C type and Python annotation on parameters
 ================================================================================
 

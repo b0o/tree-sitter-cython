@@ -3383,6 +3383,36 @@
                 ]
               },
               {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": "not"
+                          },
+                          {
+                            "type": "STRING",
+                            "value": "or"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "STRING",
+                        "value": "None"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
                 "type": "STRING",
                 "value": "="
               },
@@ -6437,6 +6467,10 @@
             {
               "type": "STRING",
               "value": "type"
+            },
+            {
+              "type": "STRING",
+              "value": "new"
             }
           ]
         },
