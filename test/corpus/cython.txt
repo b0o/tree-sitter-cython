@@ -1730,3 +1730,62 @@ cdef extern from "lib.h":
               (maybe_typed_name
                 type: (int_type)
                 name: (identifier)))))))))
+
+================================================================================
+Python-style annotated parameter with default value
+================================================================================
+
+def f1(self, x: int = 1):
+    pass
+
+def f2(self, x: list = []):
+    pass
+
+def f3(self, child: int, start: int = None, stop: int = None):
+    pass
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_default_parameter
+        name: (identifier)
+        type: (type
+          (identifier))
+        value: (integer)))
+    body: (block
+      (pass_statement)))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_default_parameter
+        name: (identifier)
+        type: (type
+          (identifier))
+        value: (list)))
+    body: (block
+      (pass_statement)))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_parameter
+        (identifier)
+        type: (type
+          (identifier)))
+      (typed_default_parameter
+        name: (identifier)
+        type: (type
+          (identifier))
+        value: (none))
+      (typed_default_parameter
+        name: (identifier)
+        type: (type
+          (identifier))
+        value: (none)))
+    body: (block
+      (pass_statement))))

@@ -651,12 +651,21 @@ module.exports = grammar(Python, {
     typed_default_parameter: $ =>
       prec(
         PREC.typed_parameter,
-        seq(
-          field("type", $.c_type),
-          field("name", $.identifier),
-          optional($.type_index),
-          "=",
-          field("value", $.expression),
+        choice(
+          seq(
+            field("type", $.c_type),
+            field("name", $.identifier),
+            optional($.type_index),
+            "=",
+            field("value", $.expression),
+          ),
+          seq(
+            field("name", $.identifier),
+            ":",
+            field("type", $.type),
+            "=",
+            field("value", $.expression),
+          ),
         ),
       ),
 

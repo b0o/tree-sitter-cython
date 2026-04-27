@@ -4413,6 +4413,10 @@
           {
             "type": "c_type",
             "named": true
+          },
+          {
+            "type": "type",
+            "named": true
           }
         ]
       },
