@@ -1848,6 +1848,56 @@ cdef extern from "lib.h":
             (c_parameters)))))))
 
 ================================================================================
+Trailing comma in external_definition (api class spec)
+================================================================================
+
+ctypedef api class Datatype [
+    type   PyMPIDatatype_Type,
+    object PyMPIDatatypeObject,
+]:
+    cdef int x
+
+ctypedef api class Status [
+    type PyMPIStatus_Type,
+    object PyMPIStatusObject
+]:
+    cdef int y
+
+--------------------------------------------------------------------------------
+
+(module
+  (ctypedef_statement
+    (class_definition
+      (storageclass)
+      name: (identifier)
+      name_specification: (external_definition
+        (c_type
+          type: (identifier))
+        (c_type
+          type: (identifier)))
+      body: (block
+        (cdef_statement
+          (cvar_def
+            (maybe_typed_name
+              type: (int_type)
+              name: (identifier)))))))
+  (ctypedef_statement
+    (class_definition
+      (storageclass)
+      name: (identifier)
+      name_specification: (external_definition
+        (c_type
+          type: (identifier))
+        (c_type
+          type: (identifier)))
+      body: (block
+        (cdef_statement
+          (cvar_def
+            (maybe_typed_name
+              type: (int_type)
+              name: (identifier))))))))
+
+================================================================================
 Free-function operator overloads in extern blocks
 ================================================================================
 

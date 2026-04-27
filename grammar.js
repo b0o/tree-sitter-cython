@@ -136,6 +136,7 @@ module.exports = grammar(Python, {
       seq(
         "[",
         commaSep1(seq(choice("object", "type"), $.c_type)),
+        optional(","),
         "]",
       ),
 
