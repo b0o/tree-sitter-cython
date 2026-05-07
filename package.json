@@ -6,7 +6,7 @@
   "license": "MIT",
   "contributors": [
     "Amaan Qureshi <amaanq12@gmail.com>",
-    "Maddison Hellstrom <me@maddison.io>"
+    "Maddison Cohodas <me@maddison.io>"
   ],
   "main": "bindings/node",
   "types": "bindings/node",
