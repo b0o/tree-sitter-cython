@@ -848,6 +848,7 @@ module.exports = grammar(Python, {
             "await",
             "match",
             "api",
+            "new",
           ),
           $.identifier,
         ),
