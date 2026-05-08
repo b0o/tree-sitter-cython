@@ -38,6 +38,8 @@ module.exports = grammar(Python, {
     }).concat([
       [$.maybe_typed_name],
       [$.c_name, $.cvar_decl],
+      [$.typed_default_parameter, $.typed_parameter],
+      [$.typed_parameter],
     ]),
 
   rules: {
@@ -133,7 +135,11 @@ module.exports = grammar(Python, {
     external_definition: $ =>
       seq(
         "[",
-        commaSep1(seq(choice("object", "type"), $.c_type)),
+        commaSep1(choice(
+          seq(choice("object", "type"), $.c_type),
+          seq("check_size", $.identifier),
+        )),
+        optional(","),
         "]",
       ),
 
@@ -239,6 +245,7 @@ module.exports = grammar(Python, {
       seq(
         repeat($.storageclass),
         $.maybe_typed_name,
+        optional(field("alias", $.string)),
         choice(
           seq(
             optional(seq("=", $.expression)),
@@ -249,6 +256,7 @@ module.exports = grammar(Python, {
               optional(seq("=", $.expression)),
             )),
             optional(","),
+            optional(";"),
             $._newline,
           ),
           $.c_function_definition,
@@ -299,7 +307,7 @@ module.exports = grammar(Python, {
     cvar_decl: $ =>
       seq(
         repeat($.storageclass),
-        $.c_type,
+        choice($.c_type, $.c_tuple_type),
         optional(seq($.c_name, optional(field("alias", $.string)))),
         choice(
           seq(
@@ -312,6 +320,7 @@ module.exports = grammar(Python, {
               $.c_identifier,
               optional(seq("=", $.expression)),
             )),
+            optional(";"),
             $._newline,
           ),
           $.c_function_definition,
@@ -427,14 +436,31 @@ module.exports = grammar(Python, {
         ),
       ),
 
+    // C tuple type: (T1, T2, ...) — and the 1-tuple form (T,). Cython feature
+    // for returning/passing multiple C values without a Python tuple.
+    // Requires at least one comma (so `(T)` is paren-wrap, not a tuple). Not
+    // folded into c_type because that would put it on the path of
+    // typed_parameter (Python-parameter context), where it collides with
+    // tuple_pattern in `lambda (a, b): ...` and `def f((a, b)=v)`. Instead
+    // it's added as an explicit alternative to maybe_typed_name (cdef
+    // contexts), cvar_decl (ctypedef/extern), cast_expression, and
+    // sizeof_expression — the positions where Cython's tuple types appear.
+    c_tuple_type: $ =>
+      seq(
+        "(",
+        $.c_type,
+        repeat1(seq(",", optional($.c_type))),
+        ")",
+      ),
+
     c_name: $ =>
-      seq(optional($.type_modifier), $.identifier),
+      choice($.identifier, $.operator_name),
 
     maybe_typed_name: $ =>
       choice(
         seq(
           optional($.type_qualifier),
-          field("type", choice($.identifier, $.int_type)),
+          field("type", choice($.identifier, $.keyword_identifier, $.int_type)),
           optional(seq(
             repeat(seq(
               ".",
@@ -443,21 +469,34 @@ module.exports = grammar(Python, {
             optional("complex"),
             repeat($.type_modifier),
           )),
+          field("name", optional(choice($.identifier, $.keyword_identifier, $.operator_name, $.c_function_pointer_name))),
+          repeat($.type_modifier),
+        ),
+        seq(
+          optional($.type_qualifier),
+          field("type", $.c_tuple_type),
+          repeat($.type_modifier),
           field("name", optional(choice($.identifier, $.operator_name, $.c_function_pointer_name))),
           repeat($.type_modifier),
         ),
         seq(
           optional($.type_qualifier),
-          field("name", choice($.identifier, $.operator_name)),
+          field("name", choice($.identifier, $.operator_name, $.destructor_name)),
           repeat($.type_modifier),
         ),
       ),
+
+    // C++ destructor name: ~ClassName, used inside cppclass bodies.
+    destructor_name: $ =>
+      seq("~", $.identifier),
 
     c_function_pointer_type: $ =>
       seq(
         $.c_type,
         "(", "*", ")",
         $.c_parameters,
+        optional($.exception_value),
+        optional($.gil_spec),
       ),
 
 
@@ -466,9 +505,14 @@ module.exports = grammar(Python, {
 
     c_function_pointer: $ =>
       seq(
+        repeat($.storageclass),
         $.c_type,
         $.c_function_pointer_name,
         $.c_parameters,
+        optional($.gil_spec),
+        optional($.exception_value),
+        optional($.gil_spec),
+        $._newline,
       ),
 
     // type_modifier: '*' | '**' | '&' | type_index ('.' NAME [type_index])*
@@ -493,7 +537,7 @@ module.exports = grammar(Python, {
       seq(
         "[",
         optional(choice(
-          $.integer,
+          $.expression,
           commaSep1(seq($.c_type, optional(seq("=", $.expression)))),
           commaSep1($.memory_view_index),
         )),
@@ -536,12 +580,12 @@ module.exports = grammar(Python, {
         optional("const"),
         choice(
           seq(":", $._suite),
-          $._newline,
+          seq(optional(";"), $._newline),
         ),
       ),
 
     template_default: $ =>
-      seq("=", "*"),
+      seq("=", choice("*", $.c_type)),
 
     template_param: $ =>
       seq($.identifier, optional($.template_default)),
@@ -565,7 +609,7 @@ module.exports = grammar(Python, {
       seq(
         $.maybe_typed_name,
         optional(seq(":", $.c_type)),
-        optional(seq("=", choice($.expression, "*"))),
+        optional(seq("=", choice($.expression, "*", "?"))),
       ),
 
     _typedargslist: $ =>
@@ -588,7 +632,7 @@ module.exports = grammar(Python, {
             choice(
               seq(optional("?"), $.expression),
               "*",
-              seq("+", optional($.identifier)),
+              seq("+", optional(choice($.identifier, "*"))),
             ),
           ),
         ),
@@ -606,6 +650,7 @@ module.exports = grammar(Python, {
               $.list_splat_pattern,
               $.dictionary_splat_pattern,
             ),
+            optional(seq(":", field("annotation", $.type))),
             optional(seq(
               choice("not", "or"),
               "None",
@@ -626,12 +671,23 @@ module.exports = grammar(Python, {
     typed_default_parameter: $ =>
       prec(
         PREC.typed_parameter,
-        seq(
-          field("type", $.c_type),
-          field("name", $.identifier),
-          optional($.type_index),
-          "=",
-          field("value", $.expression),
+        choice(
+          seq(
+            field("type", $.c_type),
+            field("name", $.identifier),
+            optional($.type_index),
+            optional(seq(":", field("annotation", $.type))),
+            optional(seq(choice("not", "or"), "None")),
+            "=",
+            field("value", $.expression),
+          ),
+          seq(
+            field("name", $.identifier),
+            ":",
+            field("type", $.type),
+            "=",
+            field("value", $.expression),
+          ),
         ),
       ),
 
@@ -664,6 +720,7 @@ module.exports = grammar(Python, {
         optional(
           seq(
             $.identifier,
+            optional(field("alias", $.string)),
             optional(seq("(", $.c_type, ")")),
           ),
         ),
@@ -695,6 +752,7 @@ module.exports = grammar(Python, {
         "cppclass",
         $.c_identifier,
         optional($.template_params),
+        optional(seq("(", commaSep1($.c_type), ")")),
         optional("nogil"),
         choice($._newline, seq(":", $._cppclass_suite)),
       ),
@@ -708,6 +766,9 @@ module.exports = grammar(Python, {
             $.ctypedef_statement,
             $.cvar_def,
             $.cppclass,
+            $.struct,
+            $.enum,
+            seq(repeat1($.decorator), $.cvar_def),
           )),
           $._dedent,
         ),
@@ -757,7 +818,7 @@ module.exports = grammar(Python, {
         seq(
           "sizeof",
           "(",
-          choice($.c_function_argument_type, $.c_type, $.expression),
+          choice($.c_function_argument_type, $.c_type, $.c_tuple_type, $.expression),
           ")",
         ),
       ),
@@ -767,7 +828,7 @@ module.exports = grammar(Python, {
         PREC.cast,
         seq(
           "<",
-          choice($.c_type, $.c_function_pointer_type),
+          choice($.c_type, $.c_tuple_type, $.c_function_pointer_type),
           optional("?"),
           ">",
           $.expression,
@@ -848,6 +909,8 @@ module.exports = grammar(Python, {
             "await",
             "match",
             "api",
+            "type",
+            "new",
           ),
           $.identifier,
         ),

@@ -1482,3 +1482,1396 @@ def func3(x:Tuple[int, float]):
                 (identifier)))))))
     (block
       (pass_statement))))
+
+================================================================================
+Cython tuple return types
+================================================================================
+
+cdef (double, double) f1(int x):
+    return (1.0, 2.0)
+
+cdef (double, double) f2(int x) nogil:
+    return (1.0, 2.0)
+
+cpdef (int, int) f3(int x) except *:
+    return (1, 2)
+
+cpdef (int, int) f4(int x) except -1:
+    return (1, 2)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type))
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (c_function_definition
+        (c_parameters
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)))
+        (block
+          (return_statement
+            (tuple
+              (float)
+              (float)))))))
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type))
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (c_function_definition
+        (c_parameters
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)))
+        (gil_spec)
+        (block
+          (return_statement
+            (tuple
+              (float)
+              (float)))))))
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type))
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (c_function_definition
+        (c_parameters
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)))
+        (exception_value)
+        (block
+          (return_statement
+            (tuple
+              (integer)
+              (integer)))))))
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type))
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (c_function_definition
+        (c_parameters
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)))
+        (exception_value
+          (unary_operator
+            argument: (integer)))
+        (block
+          (return_statement
+            (tuple
+              (integer)
+              (integer))))))))
+
+================================================================================
+Cython tuple parameter and variable types
+================================================================================
+
+cdef int param_in((int, int) p):
+    return p[0]
+
+cdef (int, int) module_pair = (1, 2)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (int_type)
+        name: (identifier))
+      (c_function_definition
+        (c_parameters
+          (maybe_typed_name
+            type: (c_tuple_type
+              (c_type
+                (int_type))
+              (c_type
+                (int_type)))
+            name: (identifier)))
+        (block
+          (return_statement
+            (subscript
+              value: (identifier)
+              subscript: (integer)))))))
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type))
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (tuple
+        (integer)
+        (integer)))))
+
+================================================================================
+Cython tuple ctypedef
+================================================================================
+
+ctypedef (int, int) IntPair
+
+ctypedef (double, double, double) Vec3
+
+--------------------------------------------------------------------------------
+
+(module
+  (ctypedef_statement
+    (cvar_decl
+      (c_tuple_type
+        (c_type
+          (int_type))
+        (c_type
+          (int_type)))
+      (identifier)))
+  (ctypedef_statement
+    (cvar_decl
+      (c_tuple_type
+        (c_type
+          (int_type))
+        (c_type
+          (int_type))
+        (c_type
+          (int_type)))
+      (identifier))))
+
+================================================================================
+Cython tuple in cast and sizeof
+================================================================================
+
+cdef int sz():
+    return sizeof((int, int))
+
+def cast_it(obj):
+    return <(int, int)>obj
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (int_type)
+        name: (identifier))
+      (c_function_definition
+        (c_parameters)
+        (block
+          (return_statement
+            (sizeof_expression
+              (c_tuple_type
+                (c_type
+                  (int_type))
+                (c_type
+                  (int_type)))))))))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier))
+    body: (block
+      (return_statement
+        (cast_expression
+          (c_tuple_type
+            (c_type
+              (int_type))
+            (c_type
+              (int_type)))
+          (identifier))))))
+
+================================================================================
+Cython tuple in extern from
+================================================================================
+
+cdef extern from "lib.h":
+    (int, int) ext_func(int x)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cvar_decl
+          (c_tuple_type
+            (c_type
+              (int_type))
+            (c_type
+              (int_type)))
+          (c_name
+            (identifier))
+          (c_function_definition
+            (c_parameters
+              (maybe_typed_name
+                type: (int_type)
+                name: (identifier)))))))))
+
+================================================================================
+Python-style annotated parameter with default value
+================================================================================
+
+def f1(self, x: int = 1):
+    pass
+
+def f2(self, x: list = []):
+    pass
+
+def f3(self, child: int, start: int = None, stop: int = None):
+    pass
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_default_parameter
+        name: (identifier)
+        type: (type
+          (identifier))
+        value: (integer)))
+    body: (block
+      (pass_statement)))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_default_parameter
+        name: (identifier)
+        type: (type
+          (identifier))
+        value: (list)))
+    body: (block
+      (pass_statement)))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_parameter
+        (identifier)
+        type: (type
+          (identifier)))
+      (typed_default_parameter
+        name: (identifier)
+        type: (type
+          (identifier))
+        value: (none))
+      (typed_default_parameter
+        name: (identifier)
+        type: (type
+          (identifier))
+        value: (none)))
+    body: (block
+      (pass_statement))))
+
+================================================================================
+Trailing semicolon on declarations
+================================================================================
+
+def fn():
+    cdef int64_t x;
+    cdef int rc;
+
+cdef extern from "lib.h":
+    int simple_func(int a, int b);
+    void void_func();
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (identifier)
+            name: (identifier))))
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier))))))
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cvar_decl
+          (c_type
+            (int_type))
+          (c_name
+            (identifier))
+          (c_function_definition
+            (c_parameters
+              (maybe_typed_name
+                type: (int_type)
+                name: (identifier))
+              (maybe_typed_name
+                type: (int_type)
+                name: (identifier)))))
+        (cvar_decl
+          (c_type
+            type: (identifier))
+          (c_name
+            (identifier))
+          (c_function_definition
+            (c_parameters)))))))
+
+================================================================================
+check_size directive in external_definition
+================================================================================
+
+cdef extern from "lib.h":
+    ctypedef extern class types.CodeType[object PyCodeObject, check_size ignore]:
+        cdef object co_name
+
+    ctypedef extern class numpy.ndarray [object PyArrayObject, check_size ignore]:
+        pass
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (ctypedef_statement
+          (extern_block
+            (class_definition
+              name: (identifier)
+              (identifier)
+              name_specification: (external_definition
+                (c_type
+                  type: (identifier))
+                (identifier))
+              body: (block
+                (cdef_statement
+                  (cvar_def
+                    (maybe_typed_name
+                      type: (identifier)
+                      name: (identifier))))))))
+        (ctypedef_statement
+          (extern_block
+            (class_definition
+              name: (identifier)
+              (identifier)
+              name_specification: (external_definition
+                (c_type
+                  type: (identifier))
+                (identifier))
+              body: (block
+                (pass_statement)))))))))
+
+================================================================================
+Default value sentinels ``= *`` and ``= ?`` on parameters
+================================================================================
+
+cdef class Foo:
+    cpdef void scale(self, double scale, bint exponential=?)
+    cpdef void set_consensus(self, DigitalSequence sequence=?) except *
+    cpdef Profile to_profile(self, Background bg=?, int L=*, bint multihit=*)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (cdef_type_declaration
+      (class_definition
+        name: (identifier)
+        body: (block
+          (cdef_statement
+            (cvar_def
+              (maybe_typed_name
+                type: (identifier)
+                name: (identifier))
+              (c_function_definition
+                (c_parameters
+                  (maybe_typed_name
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (int_type)
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (identifier)
+                    name: (identifier))))))
+          (cdef_statement
+            (cvar_def
+              (maybe_typed_name
+                type: (identifier)
+                name: (identifier))
+              (c_function_definition
+                (c_parameters
+                  (maybe_typed_name
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (identifier)
+                    name: (identifier)))
+                (exception_value))))
+          (cdef_statement
+            (cvar_def
+              (maybe_typed_name
+                type: (identifier)
+                name: (identifier))
+              (c_function_definition
+                (c_parameters
+                  (maybe_typed_name
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (identifier)
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (int_type)
+                    name: (identifier))
+                  (maybe_typed_name
+                    type: (identifier)
+                    name: (identifier)))))))))))
+
+================================================================================
+Trailing comma in external_definition (api class spec)
+================================================================================
+
+ctypedef api class Datatype [
+    type   PyMPIDatatype_Type,
+    object PyMPIDatatypeObject,
+]:
+    cdef int x
+
+ctypedef api class Status [
+    type PyMPIStatus_Type,
+    object PyMPIStatusObject
+]:
+    cdef int y
+
+--------------------------------------------------------------------------------
+
+(module
+  (ctypedef_statement
+    (class_definition
+      (storageclass)
+      name: (identifier)
+      name_specification: (external_definition
+        (c_type
+          type: (identifier))
+        (c_type
+          type: (identifier)))
+      body: (block
+        (cdef_statement
+          (cvar_def
+            (maybe_typed_name
+              type: (int_type)
+              name: (identifier)))))))
+  (ctypedef_statement
+    (class_definition
+      (storageclass)
+      name: (identifier)
+      name_specification: (external_definition
+        (c_type
+          type: (identifier))
+        (c_type
+          type: (identifier)))
+      body: (block
+        (cdef_statement
+          (cvar_def
+            (maybe_typed_name
+              type: (int_type)
+              name: (identifier))))))))
+
+================================================================================
+Free-function operator overloads in extern blocks
+================================================================================
+
+cdef extern from "lib.h":
+    bint operator==(const string_view& lhs, const string_view& rhs)
+    bint operator<(const string_view& lhs, const string_view& rhs)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cvar_decl
+          (c_type
+            type: (identifier))
+          (c_name
+            (operator_name))
+          (c_function_definition
+            (c_parameters
+              (maybe_typed_name
+                (type_qualifier)
+                type: (identifier)
+                (type_modifier)
+                name: (identifier))
+              (maybe_typed_name
+                (type_qualifier)
+                type: (identifier)
+                (type_modifier)
+                name: (identifier)))))
+        (cvar_decl
+          (c_type
+            type: (identifier))
+          (c_name
+            (operator_name))
+          (c_function_definition
+            (c_parameters
+              (maybe_typed_name
+                (type_qualifier)
+                type: (identifier)
+                (type_modifier)
+                name: (identifier))
+              (maybe_typed_name
+                (type_qualifier)
+                type: (identifier)
+                (type_modifier)
+                name: (identifier)))))))))
+
+================================================================================
+1-tuple C tuple types and trailing commas
+================================================================================
+
+ctypedef (int,) Singleton
+ctypedef (int, double, float,) Trailing
+cdef (int,) make():
+    return (5,)
+
+--------------------------------------------------------------------------------
+
+(module
+  (ctypedef_statement
+    (cvar_decl
+      (c_tuple_type
+        (c_type
+          (int_type)))
+      (identifier)))
+  (ctypedef_statement
+    (cvar_decl
+      (c_tuple_type
+        (c_type
+          (int_type))
+        (c_type
+          (int_type))
+        (c_type
+          type: (identifier)))
+      (identifier)))
+  (cdef_statement
+    (cvar_def
+      (maybe_typed_name
+        type: (c_tuple_type
+          (c_type
+            (int_type)))
+        name: (identifier))
+      (c_function_definition
+        (c_parameters)
+        (block
+          (return_statement
+            (tuple
+              (integer))))))))
+
+================================================================================
+Nested type declarations in cppclass body
+================================================================================
+
+cdef extern from "lib.h":
+    cdef cppclass Outer:
+        struct Inner:
+            int x
+        union U:
+            int i
+            float f
+        enum E:
+            VAL_A
+        cppclass Nested:
+            int method()
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cdef_type_declaration
+          (ctype_declaration
+            (cppclass
+              (c_identifier
+                name: (identifier))
+              (struct
+                (c_identifier
+                  name: (identifier))
+                (struct_suite
+                  (cvar_decl
+                    (c_type
+                      (int_type))
+                    (identifier))))
+              (struct
+                (c_identifier
+                  name: (identifier))
+                (struct_suite
+                  (cvar_decl
+                    (c_type
+                      (int_type))
+                    (identifier))
+                  (cvar_decl
+                    (c_type
+                      type: (identifier))
+                    (identifier))))
+              (enum
+                (identifier)
+                (enum_block
+                  (c_identifier
+                    name: (identifier))))
+              (cppclass
+                (c_identifier
+                  name: (identifier))
+                (cvar_def
+                  (maybe_typed_name
+                    type: (int_type)
+                    name: (identifier))
+                  (c_function_definition
+                    (c_parameters)))))))))))
+
+================================================================================
+Cast to function pointer type with noexcept and nogil
+================================================================================
+
+def fn1(obj):
+    return (<float(*)(float, float) noexcept nogil>obj)(1.0, 2.0)
+
+def fn2(obj):
+    return (<int(*)(int) nogil>obj)(5)
+
+def fn3(obj):
+    return (<int(*)(int) noexcept>obj)(5)
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier))
+    body: (block
+      (return_statement
+        (call
+          function: (parenthesized_expression
+            (cast_expression
+              (c_function_pointer_type
+                (c_type
+                  type: (identifier))
+                (c_parameters
+                  (maybe_typed_name
+                    name: (identifier))
+                  (maybe_typed_name
+                    name: (identifier)))
+                (exception_value)
+                (gil_spec))
+              (identifier)))
+          arguments: (argument_list
+            (float)
+            (float))))))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier))
+    body: (block
+      (return_statement
+        (call
+          function: (parenthesized_expression
+            (cast_expression
+              (c_function_pointer_type
+                (c_type
+                  (int_type))
+                (c_parameters
+                  (maybe_typed_name
+                    type: (int_type)))
+                (gil_spec))
+              (identifier)))
+          arguments: (argument_list
+            (integer))))))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier))
+    body: (block
+      (return_statement
+        (call
+          function: (parenthesized_expression
+            (cast_expression
+              (c_function_pointer_type
+                (c_type
+                  (int_type))
+                (c_parameters
+                  (maybe_typed_name
+                    type: (int_type)))
+                (exception_value))
+              (identifier)))
+          arguments: (argument_list
+            (integer)))))))
+
+================================================================================
+``not None`` constraint with default value, ``new`` as identifier
+================================================================================
+
+def fn1(self, Alphabet alpha not None = Alphabet.dna()):
+    pass
+
+def fn2(self, Alphabet alpha or None = None):
+    pass
+
+def use_new():
+    cdef Foo new = Foo()
+    new.method()
+    return new
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_default_parameter
+        type: (c_type
+          type: (identifier))
+        name: (identifier)
+        value: (call
+          function: (attribute
+            object: (identifier)
+            attribute: (identifier))
+          arguments: (argument_list))))
+    body: (block
+      (pass_statement)))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_default_parameter
+        type: (c_type
+          type: (identifier))
+        name: (identifier)
+        value: (none)))
+    body: (block
+      (pass_statement)))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (identifier)
+            name: (identifier))
+          (call
+            function: (identifier)
+            arguments: (argument_list))))
+      (expression_statement
+        (call
+          function: (attribute
+            object: (identifier)
+            attribute: (identifier))
+          arguments: (argument_list)))
+      (return_statement
+        (identifier)))))
+
+================================================================================
+Hybrid C type and Python annotation on parameters
+================================================================================
+
+def hybrid1(self, Comm comm: Comm) -> int:
+    pass
+
+def hybrid2(self, Info info: Info | None = None) -> Self:
+    pass
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_parameter
+        type: (c_type
+          type: (identifier))
+        (identifier)
+        annotation: (type
+          (identifier))))
+    return_type: (type
+      (identifier))
+    body: (block
+      (pass_statement)))
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier)
+      (typed_default_parameter
+        type: (c_type
+          type: (identifier))
+        name: (identifier)
+        annotation: (type
+          (binary_operator
+            left: (identifier)
+            right: (none)))
+        value: (none)))
+    return_type: (type
+      (identifier))
+    body: (block
+      (pass_statement))))
+
+================================================================================
+Soft keyword as type name in cdef
+================================================================================
+
+def fn():
+    cdef type cls = Comm
+    cdef match m = case_value
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (identifier)
+            name: (identifier))
+          (identifier)))
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (identifier)
+            name: (identifier))
+          (identifier))))))
+
+================================================================================
+Array sizes with constant expressions
+================================================================================
+
+def fn():
+    cdef int arr[N+1]
+    cdef int matrix[ROWS][COLS]
+    cdef char buffer[256]
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters)
+    body: (block
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)
+            (type_modifier
+              (type_index
+                (binary_operator
+                  left: (identifier)
+                  right: (integer)))))))
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)
+            (type_modifier
+              (type_index
+                (c_type
+                  type: (identifier))))
+            (type_modifier
+              (type_index
+                (c_type
+                  type: (identifier)))))))
+      (cdef_statement
+        (cvar_def
+          (maybe_typed_name
+            type: (int_type)
+            name: (identifier)
+            (type_modifier
+              (type_index
+                (integer)))))))))
+
+================================================================================
+except clause variants: + ExceptionType and +*
+================================================================================
+
+cdef extern from "lib.h":
+    cdef cppclass Foo:
+        Foo() except +
+        Foo(int x) except + RuntimeError
+        Foo* clone() except +*
+        void method() except +
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cdef_type_declaration
+          (ctype_declaration
+            (cppclass
+              (c_identifier
+                name: (identifier))
+              (cvar_def
+                (maybe_typed_name
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters)
+                  (exception_value)))
+              (cvar_def
+                (maybe_typed_name
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters
+                    (maybe_typed_name
+                      type: (int_type)
+                      name: (identifier)))
+                  (exception_value
+                    (identifier))))
+              (cvar_def
+                (maybe_typed_name
+                  type: (identifier)
+                  (type_modifier)
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters)
+                  (exception_value)))
+              (cvar_def
+                (maybe_typed_name
+                  type: (identifier)
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters)
+                  (exception_value))))))))))
+
+================================================================================
+C++ extern declarations: enum alias, cppclass inheritance, destructors, method alias
+================================================================================
+
+cdef extern from "lib.h":
+    cdef enum Type "ns::Type":
+        VAL_A "ns::A"
+        VAL_B "ns::B" = 2
+
+    cdef cppclass Base:
+        pass
+
+    cdef cppclass Derived(Base):
+        Derived()
+        ~Derived()
+        @staticmethod
+        Derived* create()
+        int method "renamed_method"(int x)
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cdef_type_declaration
+          (ctype_declaration
+            (enum
+              (identifier)
+              alias: (string
+                (string_start)
+                (string_content)
+                (string_end))
+              (enum_block
+                (c_identifier
+                  name: (identifier)
+                  alias: (string
+                    (string_start)
+                    (string_content)
+                    (string_end)))
+                (c_identifier
+                  name: (identifier)
+                  alias: (string
+                    (string_start)
+                    (string_content)
+                    (string_end)))
+                (integer)))))
+        (cdef_type_declaration
+          (ctype_declaration
+            (cppclass
+              (c_identifier
+                name: (identifier))
+              (cvar_def
+                (maybe_typed_name
+                  name: (identifier))))))
+        (cdef_type_declaration
+          (ctype_declaration
+            (cppclass
+              (c_identifier
+                name: (identifier))
+              (c_type
+                type: (identifier))
+              (cvar_def
+                (maybe_typed_name
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters)))
+              (cvar_def
+                (maybe_typed_name
+                  name: (destructor_name
+                    (identifier)))
+                (c_function_definition
+                  (c_parameters)))
+              (decorator
+                (identifier))
+              (cvar_def
+                (maybe_typed_name
+                  type: (identifier)
+                  (type_modifier)
+                  name: (identifier))
+                (c_function_definition
+                  (c_parameters)))
+              (cvar_def
+                (maybe_typed_name
+                  type: (int_type)
+                  name: (identifier))
+                alias: (string
+                  (string_start)
+                  (string_content)
+                  (string_end))
+                (c_function_definition
+                  (c_parameters
+                    (maybe_typed_name
+                      type: (int_type)
+                      name: (identifier))))))))))))
+
+================================================================================
+cppclass with template default types
+================================================================================
+
+cdef cppclass Map[K, V=int]:
+    pass
+
+cdef cppclass MultiDefault[A=int, B=double, C=*]:
+    pass
+
+cdef cppclass StarDefault[T=*]:
+    pass
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (cppclass
+          (c_identifier
+            name: (identifier))
+          (template_params
+            (template_param
+              (identifier))
+            (template_param
+              (identifier)
+              (template_default
+                (c_type
+                  (int_type)))))
+          (cvar_def
+            (maybe_typed_name
+              name: (identifier)))))))
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (cppclass
+          (c_identifier
+            name: (identifier))
+          (template_params
+            (template_param
+              (identifier)
+              (template_default
+                (c_type
+                  (int_type))))
+            (template_param
+              (identifier)
+              (template_default
+                (c_type
+                  (int_type))))
+            (template_param
+              (identifier)
+              (template_default)))
+          (cvar_def
+            (maybe_typed_name
+              name: (identifier)))))))
+  (cdef_statement
+    (cdef_type_declaration
+      (ctype_declaration
+        (cppclass
+          (c_identifier
+            name: (identifier))
+          (template_params
+            (template_param
+              (identifier)
+              (template_default)))
+          (cvar_def
+            (maybe_typed_name
+              name: (identifier))))))))
+
+================================================================================
+Function pointer ctypedef with except and gil clauses
+================================================================================
+
+ctypedef int (*excfn)(int x) except? -1
+
+ctypedef int (*nogilfn)(int x) nogil
+
+ctypedef int (*combined)(int x) except -1 nogil
+
+ctypedef int (*reverse_combined)(int x) nogil except -1
+
+ctypedef void (*noexceptfn)(int x) noexcept
+
+--------------------------------------------------------------------------------
+
+(module
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)
+          name: (identifier)))
+      (exception_value
+        (unary_operator
+          argument: (integer)))))
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)
+          name: (identifier)))
+      (gil_spec)))
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)
+          name: (identifier)))
+      (exception_value
+        (unary_operator
+          argument: (integer)))
+      (gil_spec)))
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)
+          name: (identifier)))
+      (gil_spec)
+      (exception_value
+        (unary_operator
+          argument: (integer)))))
+  (ctypedef_statement
+    (c_function_pointer
+      (c_type
+        type: (identifier))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)
+          name: (identifier)))
+      (exception_value))))
+
+================================================================================
+type as soft keyword (identifier and type-alias both work)
+================================================================================
+
+def fn(self):
+    type, value, traceback = self._exc_info
+    type = self._exc_info
+
+type IntAlias = int
+
+--------------------------------------------------------------------------------
+
+(module
+  (function_definition
+    name: (identifier)
+    parameters: (parameters
+      (identifier))
+    body: (block
+      (expression_statement
+        (assignment
+          left: (pattern_list
+            (identifier)
+            (identifier)
+            (identifier))
+          right: (attribute
+            object: (identifier)
+            attribute: (identifier))))
+      (expression_statement
+        (assignment
+          left: (identifier)
+          right: (attribute
+            object: (identifier)
+            attribute: (identifier))))))
+  (type_alias_statement
+    (type
+      (identifier))
+    (type
+      (identifier))))
+
+================================================================================
+Doubled const in cdef extern declaration
+================================================================================
+
+cdef extern from "lib.h":
+    const char* const* _LIB_FEATURES "_lib_features"
+    const char* const* DOUBLE_CONST
+
+--------------------------------------------------------------------------------
+
+(module
+  (cdef_statement
+    (extern_block
+      (string
+        (string_start)
+        (string_content)
+        (string_end))
+      (extern_suite
+        (cvar_decl
+          (c_type
+            (type_qualifier)
+            (int_type)
+            (type_modifier)
+            (type_modifier))
+          (identifier)
+          alias: (string
+            (string_start)
+            (string_content)
+            (string_end)))
+        (cvar_decl
+          (c_type
+            (type_qualifier)
+            (int_type)
+            (type_modifier)
+            (type_modifier))
+          (identifier))))))
+
+================================================================================
+ctypedef public function pointer
+================================================================================
+
+ctypedef public int (*F1)(int)
+
+ctypedef public double (*F2)(double, int)
+
+ctypedef public char* (*F3)(const char*)
+
+--------------------------------------------------------------------------------
+
+(module
+  (ctypedef_statement
+    (c_function_pointer
+      (storageclass)
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type)))))
+  (ctypedef_statement
+    (c_function_pointer
+      (storageclass)
+      (c_type
+        (int_type))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          type: (int_type))
+        (maybe_typed_name
+          type: (int_type)))))
+  (ctypedef_statement
+    (c_function_pointer
+      (storageclass)
+      (c_type
+        (int_type)
+        (type_modifier))
+      (c_function_pointer_name
+        (c_identifier
+          name: (identifier)))
+      (c_parameters
+        (maybe_typed_name
+          (type_qualifier)
+          type: (int_type)
+          (type_modifier))))))
